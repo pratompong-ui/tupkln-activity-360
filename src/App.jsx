@@ -301,6 +301,34 @@ textarea.inp{min-height:70px;resize:vertical;}
 .catrow .cfill{height:100%;border-radius:20px;animation:growbarh 1s cubic-bezier(.22,1,.36,1) both;}
 .catrow .cnum2{font-size:13px;font-weight:700;color:var(--navy);width:26px;text-align:right;}
 
+/* ---------- แถบภาพประจำเดือน / ความคืบหน้าปีการศึกษา / ไทม์ไลน์ ---------- */
+.monthbanner{position:relative;height:72px;border-radius:18px;margin-bottom:14px;overflow:hidden;
+  display:flex;align-items:center;padding:0 20px;}
+.monthbanner .mb-emoji{position:absolute;right:16px;bottom:-14px;font-size:74px;opacity:.28;
+  animation:floaty 7s ease-in-out infinite;}
+.monthbanner .mb-t{position:relative;z-index:2;color:#fff;font-weight:700;font-size:17px;
+  text-shadow:0 1px 6px rgba(16,24,64,.28);}
+.monthbanner .mb-s{position:relative;z-index:2;color:rgba(255,255,255,.92);font-size:12.5px;}
+.monthbanner .mb-c{position:absolute;border-radius:50%;background:rgba(255,255,255,.16);}
+
+.yearbar{margin-top:14px;position:relative;}
+.yearbar .yt{height:8px;border-radius:20px;background:rgba(255,255,255,.22);overflow:hidden;}
+.yearbar .yf{height:100%;border-radius:20px;background:linear-gradient(90deg,#FF9CC4,var(--pink));
+  animation:growbarh 1.2s cubic-bezier(.22,1,.36,1) both;}
+.yearbar .ylab{display:flex;justify-content:space-between;font-size:11.5px;color:#D7DDFF;margin-top:6px;}
+
+.tl{position:relative;padding-left:26px;}
+.tl:before{content:"";position:absolute;left:7px;top:6px;bottom:6px;width:3px;border-radius:3px;
+  background:linear-gradient(180deg,var(--softpink),var(--lightblue));}
+.tlmonth{font-size:13px;font-weight:700;color:var(--navy);margin:16px 0 8px;position:relative;}
+.tlmonth:first-child{margin-top:0;}
+.tlitem{position:relative;padding:9px 12px;border-radius:14px;background:var(--cream);margin-bottom:8px;
+  animation:popin .4s cubic-bezier(.22,1,.36,1) both;}
+.tlitem:hover{background:#F5EDE7;}
+.tlitem .tdot{position:absolute;left:-24px;top:15px;width:13px;height:13px;border-radius:50%;
+  border:3px solid #fff;box-shadow:0 0 0 2px rgba(22,32,92,.08);}
+.tlitem .tt{font-weight:600;font-size:14px;line-height:1.4;}
+
 @media (max-width:900px){
   .tp{flex-direction:column;}
   .sidebar{display:none;}
@@ -379,7 +407,14 @@ const CATS = [
   { id: "admin", label: "ประชุม งานบริหาร งานประกัน", icon: "🗂" },
   { id: "other", label: "อื่น ๆ", icon: "📌" },
 ];
+const isAdminUnit = (u) => /บริหาร/.test(u.type || "") || /^(กลุ่มบริหาร|หัวหน้าระดับ)/.test(u.name || "");
+const unitsOfType = (units, t) => units.filter((u) => t === "กลุ่มบริหาร" ? isAdminUnit(u) : !isAdminUnit(u));
 const catOf = (id) => CATS.find((c) => c.id === id);
+const MONTH_TONE = [
+  ["#4C63C9","#7B54D3"], ["#E0558B","#F2856B"], ["#EF8033","#E8B14A"], ["#E14848","#EF8033"],
+  ["#17A673","#57B96A"], ["#3B72E8","#4CA8D8"], ["#0E9BA8","#3B9BD8"], ["#2C56B8","#5C7BE0"],
+  ["#B0468C","#E0558B"], ["#D9A208","#E8B14A"], ["#7B54D3","#9B6FD8"], ["#2B6FB8","#63A6D8"],
+];
 const MONTH_EMOJI = ["🎋","💐","🌸","🔥","🌱","☔","🕯","💙","🍂","🎗","🌾","❄"];
 
 /* ปีการศึกษาไทย: เดือน พ.ค.–ธ.ค. = ปี พ.ศ. ปัจจุบัน, ม.ค.–เม.ย. = ปี พ.ศ. ก่อนหน้า */
@@ -722,8 +757,9 @@ export default function App() {
   const colorOf = (id) => { const i = data.units.findIndex((u) => u.id === id); return i < 0 ? "#9AA0B5" : COLORS[i % COLORS.length]; };
   const acts = [...data.activities].sort((a, b) => a.no - b.no);
   const dated = acts.filter((a) => a.date);
-  const onDay = (d) => dated.filter((a) => a.date <= d && d <= lastDay(a));
-  const upcoming = dated.filter((a) => lastDay(a) >= TODAY).sort((a, b) => a.date.localeCompare(b.date));
+  const datedView = myUnit ? dated.filter((a) => a.unitId === myUnit) : dated;
+  const onDay = (d) => datedView.filter((a) => a.date <= d && d <= lastDay(a));
+  const upcoming = datedView.filter((a) => lastDay(a) >= TODAY).sort((a, b) => a.date.localeCompare(b.date));
   const tomorrowList = onDay(TOMORROW);
   const myActs = myUnit ? acts.filter((a) => a.unitId === myUnit) : [];
 
@@ -784,7 +820,7 @@ export default function App() {
     const move = (n) => { const d = new Date(cursor.y, cursor.m + n, 1); setCursor({ y: d.getFullYear(), m: d.getMonth() }); };
     const selList = onDay(sel);
     const mKey = `${cursor.y}-${String(cursor.m + 1).padStart(2, "0")}`;
-    const monthList = dated.filter((a) => a.date.slice(0, 7) === mKey || lastDay(a).slice(0, 7) === mKey);
+    const monthList = datedView.filter((a) => a.date.slice(0, 7) === mKey || lastDay(a).slice(0, 7) === mKey);
 
     return (
       <>
@@ -800,6 +836,20 @@ export default function App() {
               {tomorrowList.length > 0 && <span className="hchip hot">🔔 พรุ่งนี้ {tomorrowList.length} กิจกรรม</span>}
               <span className="hchip">🗓 เดือนนี้ {monthList.length} กิจกรรม</span>
             </div>
+            {(() => {
+              const y = ACAD_YEAR - 543;
+              const start = new Date(y, 4, 1), end = new Date(y + 1, 3, 30);
+              const now = new Date();
+              const pct = Math.min(100, Math.max(0, Math.round(((now - start) / (end - start)) * 100)));
+              return (
+                <div className="yearbar">
+                  <div className="yt"><div className="yf" style={{ width: pct + "%" }} /></div>
+                  <div className="ylab"><span>พ.ค. {ACAD_YEAR}</span>
+                    <span>ผ่านมาแล้ว {pct}% ของปีการศึกษา</span>
+                    <span>มี.ค. {ACAD_YEAR + 1}</span></div>
+                </div>
+              );
+            })()}
           </div>
           <div className={"hmascot float" + (bouncing ? " bounce" : "")} onClick={pokeCare}
             title="แตะน้อง CARE ดูสิครับ">
@@ -847,6 +897,7 @@ export default function App() {
         })()}
 
         <div style={{ marginTop: 18 }} className="noprint-cal">
+          <div className="usub" style={{ marginBottom: 8 }}>แตะกลุ่มเพื่อกรองปฏิทินเฉพาะงานของกลุ่มนั้น</div>
           <div className="chips" style={{ marginBottom: 10 }}>
             <button className={"chip" + (myUnit === "" ? " on" : "")} onClick={() => pickUnit("")}>ดูทุกกลุ่ม</button>
           </div>
@@ -854,7 +905,7 @@ export default function App() {
             <div key={t} style={{ marginBottom: 10 }}>
               <div className="usub" style={{ marginBottom: 6 }}>{t}</div>
               <div className="chips" style={{ marginBottom: 0 }}>
-                {data.units.filter((u) => u.type === t).map((u) => (
+                {unitsOfType(data.units, t).map((u) => (
                   <button key={u.id} className={"chip" + (myUnit === u.id ? " on" : "")} onClick={() => pickUnit(u.id)}>
                     <span className="dot" style={{ background: colorOf(u.id) }} />{u.name}
                   </button>
@@ -864,7 +915,30 @@ export default function App() {
           ))}
         </div>
 
+        {myUnit && (
+          <div className="card noprint-cal" style={{ display: "flex", alignItems: "center", gap: 12,
+            padding: "12px 18px", marginBottom: 12, flexWrap: "wrap" }}>
+            <span className="dot" style={{ background: colorOf(myUnit) }} />
+            <span style={{ fontSize: 14 }}>
+              กำลังแสดงเฉพาะกิจกรรมของ <b>{unitName(myUnit)}</b> ({myActs.length} งาน)
+            </span>
+            <button className="btn btn-g btn-sm" style={{ marginLeft: "auto" }} onClick={() => pickUnit("")}>
+              แสดงทุกกลุ่ม
+            </button>
+          </div>
+        )}
+
         <div className="card">
+          <div className="monthbanner" style={{
+            background: `linear-gradient(120deg, ${MONTH_TONE[cursor.m][0]}, ${MONTH_TONE[cursor.m][1]})` }}>
+            <span className="mb-c" style={{ width: 90, height: 90, left: -22, top: -30 }} />
+            <span className="mb-c" style={{ width: 44, height: 44, left: "34%", bottom: -18 }} />
+            <div>
+              <div className="mb-t">{TH_M[cursor.m]} {cursor.y + 543}</div>
+              <div className="mb-s">{monthList.length ? `มี ${monthList.length} กิจกรรมในเดือนนี้` : "ยังไม่มีกิจกรรมในเดือนนี้"}</div>
+            </div>
+            <span className="mb-emoji">{MONTH_EMOJI[cursor.m]}</span>
+          </div>
           <div className="calbar">
             <button className="arrow" onClick={() => move(-1)}>‹</button>
             <div className="calmonth">{TH_M[cursor.m]} {cursor.y + 543}
@@ -909,9 +983,10 @@ export default function App() {
             })}
           </div>
           <div className="legend">
-            {data.units.filter((u) => acts.some((a) => a.unitId === u.id)).map((u) => (
+            {data.units.filter((u) => datedView.some((a) => a.unitId === u.id)).map((u) => (
               <span className="lg" key={u.id}><b style={{ background: colorOf(u.id) }} />{u.name}</span>
             ))}
+            {datedView.length === 0 && <span className="usub">ยังไม่มีกิจกรรมที่กำหนดวันที่ในมุมมองนี้</span>}
           </div>
         </div>
 
@@ -1099,6 +1174,34 @@ export default function App() {
               })()}
             </div>
           </div>
+        </div>
+
+        <div className="card" style={{ marginBottom: 14 }}>
+          <h3 style={{ fontSize: 16, marginBottom: 14 }}>ไทม์ไลน์กิจกรรมตลอดปีการศึกษา</h3>
+          {dated.length === 0 ? <div className="usub">ยังไม่มีกิจกรรมที่กำหนดวันที่</div> : (
+            <div className="tl">
+              {(() => {
+                const sorted = [...dated].sort((a, b) => a.date.localeCompare(b.date));
+                const out = []; let cur = "";
+                sorted.forEach((a, i) => {
+                  const k = a.date.slice(0, 7);
+                  if (k !== cur) {
+                    cur = k;
+                    out.push(<div className="tlmonth" key={"m" + k}>
+                      {TH_M[Number(k.slice(5, 7)) - 1]} {Number(k.slice(0, 4)) + 543}</div>);
+                  }
+                  out.push(
+                    <div className="tlitem" key={a.id} style={{ animationDelay: (i * 0.04).toFixed(2) + "s" }}>
+                      <span className="tdot" style={{ background: colorOf(a.unitId) }} />
+                      <div className="tt">{catOf(a.cat) ? catOf(a.cat).icon + " " : ""}{a.name || "ยังไม่ตั้งชื่อกิจกรรม"}</div>
+                      <div className="usub">{spanText(a)} · {unitName(a.unitId) || "ยังไม่มอบหมาย"}</div>
+                    </div>
+                  );
+                });
+                return out;
+              })()}
+            </div>
+          )}
         </div>
 
         <div className="card" style={{ marginBottom: 14 }}>
@@ -1316,7 +1419,7 @@ export default function App() {
     const [f, setF] = useState(cur || { no: nextNo, name: "", unitId: "", cat: "", albumUrl: "", joinCount: "", date: modal.date || "", dateEnd: "", time: "", place: "", dress: "", target: "", contact: "", docUrl: "" });
     const set = (k, v) => setF({ ...f, [k]: v });
     const submit = () => {
-      const body = { no: Number(f.no) > 0 ? Number(f.no) : nextNo, name: f.name, unitId: f.unitId, cat: f.cat || "", date: f.date,
+      const body = { no: Number(f.no), name: f.name, unitId: f.unitId, cat: f.cat || "", date: f.date,
         dateEnd: f.dateEnd && f.dateEnd > f.date ? f.dateEnd : "", time: f.time,
         place: f.place, dress: f.dress, target: f.target, contact: f.contact, docUrl: f.docUrl };
       if (isNew) save({ ...data, activities: [...data.activities, { id: "a" + uid(), ...body, result: "", closed: false, absentees: [], updatedAt: new Date().toISOString() }] }, "เพิ่มกิจกรรมแล้ว");
@@ -1341,7 +1444,7 @@ export default function App() {
                 <option value="">— ยังไม่มอบหมาย —</option>
                 {["กลุ่มสาระการเรียนรู้", "กลุ่มบริหาร"].map((t) => (
                   <optgroup key={t} label={t}>
-                    {data.units.filter((u) => u.type === t).map((u) => <option key={u.id} value={u.id}>{u.name}</option>)}
+                    {unitsOfType(data.units, t).map((u) => <option key={u.id} value={u.id}>{u.name}</option>)}
                   </optgroup>
                 ))}
               </select></div>
@@ -1603,7 +1706,7 @@ export default function App() {
             <div key={t} style={{ marginBottom: 14 }}>
               <div className="usub" style={{ marginBottom: 6 }}>{t}</div>
               <div className="plist">
-                {list.filter((u) => u.type === t).map((u) => (
+                {unitsOfType(list, t).map((u) => (
                   <div className="prow" key={u.id}>
                     <div className="pav" style={{ background: colorOf(u.id), color: "#fff" }}>{u.short}</div>
                     <input className="inp" style={{ flex: 1, padding: "6px 10px" }} value={u.name}
