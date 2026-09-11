@@ -1,35 +1,128 @@
-/* TUPKLN ACTIVITY 360 — service worker
-   หลักการ: หน้าเว็บและไฟล์โปรแกรมใช้ "เครือข่ายก่อน" เสมอ เพื่อไม่ให้ครูติดอยู่กับเวอร์ชันเก่า
-   ถ้าออฟไลน์จึงค่อยดึงจากแคชที่เก็บไว้ ส่วนข้อมูลจาก Supabase ไม่แคชเด็ดขาด */
-const CACHE = 'tupkln-activity-v1';
-const SHELL = ['/', '/index.html', '/manifest.webmanifest', '/icon-192.png', '/icon-512.png'];
+/* TUPKLN ACTIVITY 360 — Service Worker
+   แนวทาง:
+   - หน้าเว็บและไฟล์โปรแกรม: Network First
+   - ถ้าเครือข่ายใช้งานไม่ได้: ใช้ไฟล์ที่เคย Cache
+   - การเปิดหน้า/Route ขณะ Offline: fallback ไป index.html
+   - ข้อมูล Supabase และ API: ไม่ Cache
+*/
 
-self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));
+const CACHE = "tupkln-activity-v2";
+
+const SHELL = [
+  "/",
+  "/index.html",
+  "/manifest.webmanifest",
+  "/icon.svg",
+  "/icon-192.png",
+  "/icon-512.png",
+  "/icon-maskable-512.png",
+  "/apple-touch-icon.png",
+];
+
+self.addEventListener("install", (event) => {
+  event.waitUntil(
+    caches
+      .open(CACHE)
+      .then((cache) => cache.addAll(SHELL))
+      .then(() => self.skipWaiting())
+  );
 });
 
-self.addEventListener('activate', (e) => {
-  e.waitUntil(
-    caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
+self.addEventListener("activate", (event) => {
+  event.waitUntil(
+    caches
+      .keys()
+      .then((keys) =>
+        Promise.all(
+          keys
+            .filter(
+              (key) =>
+                key.startsWith("tupkln-activity-") &&
+                key !== CACHE
+            )
+            .map((key) => caches.delete(key))
+        )
+      )
       .then(() => self.clients.claim())
   );
 });
 
-self.addEventListener('fetch', (e) => {
-  const url = new URL(e.request.url);
-  if (e.request.method !== 'GET') return;
-  // ข้อมูลผู้ใช้และการเข้าสู่ระบบ ต้องสดเสมอ
-  if (url.hostname.endsWith('supabase.co') || url.hostname.endsWith('supabase.in')) return;
+self.addEventListener("fetch", (event) => {
+  const request = event.request;
+  const url = new URL(request.url);
+
+  // จัดการเฉพาะ GET
+  if (request.method !== "GET") return;
+
+  // ข้อมูลจาก Supabase ต้องสดเสมอ และไม่เก็บลง Cache
+  if (
+    url.hostname.endsWith("supabase.co") ||
+    url.hostname.endsWith("supabase.in")
+  ) {
+    return;
+  }
+
+  // เผื่ออนาคตมี API ของระบบเอง ก็ไม่ Cache เช่นกัน
+  if (url.origin === self.location.origin && url.pathname.startsWith("/api/")) {
+    return;
+  }
+
+  // ไม่ยุ่งกับทรัพยากรจากเว็บไซต์ภายนอก
   if (url.origin !== self.location.origin) return;
 
-  e.respondWith(
-    fetch(e.request)
-      .then((res) => {
-        const copy = res.clone();
-        caches.open(CACHE).then((c) => c.put(e.request, copy)).catch(() => {});
-        return res;
+  // การเปิดหน้าเว็บหรือ Route ของแอป
+  if (request.mode === "navigate") {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          if (response.ok) {
+            const copy = response.clone();
+
+            caches
+              .open(CACHE)
+              .then((cache) => cache.put(request, copy))
+              .catch(() => {});
+          }
+
+          return response;
+        })
+        .catch(async () => {
+          const cachedPage = await caches.match(request);
+
+          if (cachedPage) {
+            return cachedPage;
+          }
+
+          return caches.match("/index.html");
+        })
+    );
+
+    return;
+  }
+
+  // JS / CSS / รูปภาพ / Font และไฟล์ภายในแอป
+  event.respondWith(
+    fetch(request)
+      .then((response) => {
+        if (response.ok && response.type === "basic") {
+          const copy = response.clone();
+
+          caches
+            .open(CACHE)
+            .then((cache) => cache.put(request, copy))
+            .catch(() => {});
+        }
+
+        return response;
       })
-      .catch(() => caches.match(e.request).then((hit) => hit || caches.match('/index.html')))
+      .catch(async () => {
+        const cached = await caches.match(request);
+
+        if (cached) {
+          return cached;
+        }
+
+        return Response.error();
+      })
   );
 });
