@@ -172,11 +172,8 @@ async function persistSharedData(next) {
 
 window.activityAuth = {
   async isAdmin() { return isAdmin(); },
-  async signIn(email) {
-    return supabase.auth.signInWithOtp({
-      email,
-      options: { emailRedirectTo: window.location.origin },
-    });
+  async signIn(email, password) {
+    return supabase.auth.signInWithPassword({ email, password });
   },
   async signOut() { return supabase.auth.signOut(); },
   onChange(callback) {

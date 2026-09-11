@@ -1046,44 +1046,57 @@ export default function App() {
   };
 
   const PinModal = () => {
-    const [email, setEmail] = useState("");
-    const [sent, setSent] = useState(false);
+    const [email, setEmail] = useState("pratompong@tup-kln.ac.th");
+    const [password, setPassword] = useState("");
+    const [busy, setBusy] = useState(false);
     const [err, setErr] = useState("");
     const go = async () => {
       const e = email.trim();
       if (!e || !e.includes("@")) { setErr("กรุณากรอกอีเมลให้ถูกต้อง"); return; }
-      setErr("");
+      if (!password) { setErr("กรุณากรอกรหัสผ่าน"); return; }
+      setErr(""); setBusy(true);
       try {
-        const { error } = await window.activityAuth.signIn(e);
+        const { error } = await window.activityAuth.signIn(e, password);
         if (error) throw error;
-        setSent(true);
+        const ok = await window.activityAuth.isAdmin();
+        if (!ok) {
+          await window.activityAuth.signOut();
+          throw new Error("บัญชีนี้ไม่มีสิทธิ์ผู้ดูแล Activity 360");
+        }
+        setAdmin(true);
+        try {
+          const r = await window.storage.get(KEY, true);
+          if (r?.value) { setData(JSON.parse(r.value)); setSyncAt(new Date()); }
+        } catch (e) {}
+        setModal(null);
+        say("เข้าสู่ระบบผู้ดูแลแล้ว");
       } catch (ex) {
-        setErr(ex?.message || "ส่งลิงก์เข้าสู่ระบบไม่สำเร็จ");
-      }
+        const m = ex?.message || "เข้าสู่ระบบไม่สำเร็จ";
+        setErr(m === "Invalid login credentials" ? "อีเมลหรือรหัสผ่านไม่ถูกต้อง" : m);
+      } finally { setBusy(false); }
     };
     return (
       <div className="ovl" onClick={() => setModal(null)}>
         <div className="modal" style={{ maxWidth: 420 }} onClick={(e) => e.stopPropagation()}>
-          <div className="mhead"><Care size={54} mood={sent ? "happy" : "alert"} />
-            <div><h3>เข้าสู่ระบบผู้ดูแล</h3><p>ใช้ลิงก์ยืนยันที่ส่งไปยังอีเมลผู้ดูแล</p></div>
+          <div className="mhead"><Care size={54} mood="alert" />
+            <div><h3>เข้าสู่ระบบผู้ดูแล</h3><p>ใช้อีเมลและรหัสผ่านของบัญชีผู้ดูแล</p></div>
             <button className="x" onClick={() => setModal(null)}>✕</button></div>
-          {sent ? (
-            <div style={{ background: "var(--cream)", borderRadius: 16, padding: 18, textAlign: "center" }}>
-              <CheckMark size={48} />
-              <div style={{ marginTop: 8, fontWeight: 600 }}>ส่งลิงก์เข้าสู่ระบบแล้ว</div>
-              <div style={{ marginTop: 4, fontSize: 13.5, color: "var(--gray)" }}>เปิดอีเมลบนอุปกรณ์นี้ แล้วแตะลิงก์เพื่อกลับเข้าสู่ Activity 360</div>
-            </div>
-          ) : (<>
-            <div className="field"><label>อีเมลผู้ดูแล</label>
-              <input className="inp" type="email" value={email} autoFocus
-                onChange={(e) => { setEmail(e.target.value); setErr(""); }}
-                onKeyDown={(e) => e.key === "Enter" && go()} placeholder="name@example.com" /></div>
-            {err && <div style={{ color: "var(--red)", fontSize: 13, marginTop: -6, marginBottom: 10 }}>{err}</div>}
-            <button className="btn btn-p" style={{ width: "100%" }} onClick={go}>ส่งลิงก์เข้าสู่ระบบ</button>
-            <p style={{ fontSize: 12.5, color: "var(--gray)", marginTop: 12, textAlign: "center" }}>
-              ยกเลิกการใช้ PIN 1234 แล้ว เพื่อไม่ให้รหัสผู้ดูแลอยู่ในโค้ดหน้าเว็บ
-            </p>
-          </>)}
+          <div className="field"><label>อีเมลผู้ดูแล</label>
+            <input className="inp" type="email" value={email} autoFocus
+              onChange={(e) => { setEmail(e.target.value); setErr(""); }}
+              autoComplete="username" placeholder="name@example.com" /></div>
+          <div className="field"><label>รหัสผ่าน</label>
+            <input className="inp" type="password" value={password}
+              onChange={(e) => { setPassword(e.target.value); setErr(""); }}
+              onKeyDown={(e) => e.key === "Enter" && !busy && go()}
+              autoComplete="current-password" placeholder="••••••••" /></div>
+          {err && <div style={{ color: "var(--red)", fontSize: 13, marginTop: -6, marginBottom: 10 }}>{err}</div>}
+          <button className="btn btn-p" style={{ width: "100%" }} onClick={go} disabled={busy}>
+            {busy ? "กำลังเข้าสู่ระบบ..." : "เข้าสู่ระบบ"}
+          </button>
+          <p style={{ fontSize: 12.5, color: "var(--gray)", marginTop: 12, textAlign: "center" }}>
+            ระบบไม่เก็บรหัสผ่านไว้ในเว็บไซต์ และไม่ต้องส่ง Magic Link ทางอีเมลทุกครั้ง
+          </p>
         </div>
       </div>
     );

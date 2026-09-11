@@ -23,3 +23,8 @@
 npm install
 npm run dev
 ```
+
+
+## การเข้าสู่ระบบผู้ดูแล
+เวอร์ชันนี้ใช้ Email + Password ผ่าน Supabase Auth (`signInWithPassword`) แทน Magic Link เพื่อหลีกเลี่ยงข้อจำกัด email rate limit.
+บัญชีต้องได้รับสิทธิ์ผู้ดูแลในฐานข้อมูลก่อนจึงจะแก้ไขข้อมูลได้.
