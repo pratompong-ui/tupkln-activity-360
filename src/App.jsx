@@ -226,7 +226,9 @@ textarea.inp{min-height:70px;resize:vertical;}
     font-size:26px;margin-top:-22px;box-shadow:0 8px 20px rgba(224,27,110,.36);}
 }
 @media print{
-  .sidebar,.bnav,.noprint{display:none !important;}
+  .sidebar,.bnav,.noprint,.noprint-cal{display:none !important;}
+  .calgrid{gap:4px;} .cday{min-height:82px;background:#fff;border:1px solid #ddd;}
+  .pill{-webkit-line-clamp:3;}
   .tp{background:#fff;} .main{padding:0;max-width:none;}
   .card,.att,.stat{box-shadow:none;border:1px solid #ddd;break-inside:avoid;}
 }
@@ -344,6 +346,18 @@ const gcalUrl = (a, unitLabel) => {
   });
   return "https://calendar.google.com/calendar/render?" + q.toString();
 };
+/* ข้อความสรุปกิจกรรม สำหรับคัดลอกไปวางในไลน์ */
+const lineText = (a, unitLabel) => [
+  `📅 งานที่ ${a.no} ${a.name || "กิจกรรมโรงเรียน"}`,
+  a.date ? `วันที่ ${spanText(a)}` : "",
+  a.time ? `เวลา ${a.time} น.` : "",
+  a.place ? `สถานที่ ${a.place}` : "",
+  a.dress ? `การแต่งกาย ${a.dress}` : "",
+  a.target ? `ผู้เข้าร่วม ${a.target}` : "",
+  unitLabel ? `รับผิดชอบโดย ${unitLabel}` : "",
+  a.docUrl ? `เอกสาร ${a.docUrl}` : "",
+].filter(Boolean).join("\n");
+
 const download = (name, text, mime) => {
   const blob = new Blob([text], { type: mime });
   const url = URL.createObjectURL(blob);
@@ -525,7 +539,11 @@ export default function App() {
   const save = async (next, msg) => {
     setData(next);
     try { await window.storage.set(KEY, JSON.stringify(next), true); setSyncAt(new Date()); if (msg) say(msg); }
-    catch (e) { say("บันทึกไม่สำเร็จ ลองอีกครั้ง", "!"); }
+    catch (e) {
+      const m = (e && e.message) ? String(e.message) : "";
+      say(m ? "บันทึกไม่สำเร็จ: " + m.slice(0, 90) : "บันทึกไม่สำเร็จ ลองอีกครั้ง", "!");
+      console.error("save failed:", e);
+    }
   };
   const patchAct = (id, patch, msg) =>
     save({ ...data, activities: data.activities.map((a) => a.id === id ? { ...a, ...patch, updatedAt: new Date().toISOString() } : a) }, msg);
@@ -586,6 +604,11 @@ export default function App() {
           {admin && <span className={"badge " + STATUS[s].cls} style={{ marginLeft: "auto" }}>{STATUS[s].icon} {STATUS[s].label}</span>}
         </div>
         <h3>{a.name || "ยังไม่ได้ตั้งชื่อกิจกรรม"}</h3>
+        {a.date && (a.date <= TODAY && TODAY <= lastDay(a)
+          ? <span className="badge" style={{ background: "var(--softpink)", color: "var(--pink)", marginBottom: 8 }}>🔔 จัดวันนี้</span>
+          : lastDay(a) < TODAY
+            ? <span className="badge b-none" style={{ marginBottom: 8 }}>ผ่านไปแล้ว</span>
+            : null)}
         <div className="attmeta"><span>📅</span><span>
           {a.date ? spanText(a) + (spanDays(a) > 1 ? ` (${spanDays(a)} วัน)` : "") + (a.time ? " · " + a.time + " น." : "") : "ยังไม่กำหนดวันที่"}
         </span></div>
@@ -597,6 +620,11 @@ export default function App() {
           {a.date && <a className="btn btn-g btn-sm" href={gcalUrl(a, unitName(a.unitId))}
             target="_blank" rel="noreferrer">+ Google ปฏิทิน</a>}
           {a.docUrl && <a className="btn btn-g btn-sm" href={a.docUrl} target="_blank" rel="noreferrer">📎 เปิดเอกสาร</a>}
+          <button className="btn btn-g btn-sm" onClick={() => {
+            const t = lineText(a, unitName(a.unitId));
+            if (navigator.clipboard) navigator.clipboard.writeText(t).then(() => say("คัดลอกข้อความแล้ว วางในไลน์ได้เลย"), () => say("คัดลอกไม่สำเร็จ", "!"));
+            else say("อุปกรณ์นี้คัดลอกอัตโนมัติไม่ได้", "!");
+          }}>📋 คัดลอกข้อความ</button>
           {admin && <button className="btn btn-p btn-sm" onClick={() => setModal({ type: "absent", id: a.id })}>บันทึกผู้ไม่เข้าร่วม</button>}
           {admin && <button className="btn btn-g btn-sm" onClick={() => setModal({ type: "edit", id: a.id })}>แก้ไข</button>}
         </div>
@@ -619,7 +647,7 @@ export default function App() {
 
     return (
       <>
-        <div className="hero">
+        <div className="hero noprint-cal">
           <div className="htext">
             <h1>ปฏิทินกิจกรรมโรงเรียน</h1>
             <p>{myUnit
@@ -645,7 +673,7 @@ export default function App() {
           </div>
         )}
 
-        <div style={{ marginTop: 18 }}>
+        <div style={{ marginTop: 18 }} className="noprint-cal">
           <div className="chips" style={{ marginBottom: 10 }}>
             <button className={"chip" + (myUnit === "" ? " on" : "")} onClick={() => pickUnit("")}>ดูทุกกลุ่ม</button>
           </div>
@@ -671,6 +699,7 @@ export default function App() {
             <div style={{ marginLeft: "auto", display: "flex", gap: 8 }}>
               <button className="btn btn-g btn-sm"
                 onClick={() => { const d = new Date(); setCursor({ y: d.getFullYear(), m: d.getMonth() }); setSel(TODAY); }}>วันนี้</button>
+              <button className="btn btn-g btn-sm" onClick={() => window.print()}>🖨 พิมพ์ปฏิทิน</button>
               {monthList.length > 0 && <button className="btn btn-g btn-sm"
                 onClick={() => { download(`ปฏิทิน-${TH_M[cursor.m]}.ics`, icsOf(monthList, unitName), "text/calendar;charset=utf-8"); say("บันทึกปฏิทินทั้งเดือนแล้ว"); }}>
                 ⬇ ไฟล์ .ics ทั้งเดือน</button>}
@@ -712,6 +741,7 @@ export default function App() {
           </div>
         </div>
 
+        <div className="noprint-cal">
         <div className="sectitle daypanel" id="daypanel">
           <h2>{thFull(sel)}</h2>
           <span className="cnt">{selList.length ? `${selList.length} กิจกรรม` : "ไม่มีกิจกรรม"}</span>
@@ -723,6 +753,8 @@ export default function App() {
             <h3 style={{ marginTop: 8 }}>วันนี้ไม่มีกิจกรรม</h3>
             <p>แตะวันอื่นในปฏิทินเพื่อดูกิจกรรม หรือดูรายการที่กำลังจะถึงด้านล่าง</p></div>
         ) : <div className="attgrid">{selList.map((a) => <ActCard key={a.id} a={a} />)}</div>}
+
+        </div>
 
         <div className="sectitle">
           <h2>{monthList.length ? `กิจกรรมเดือน${TH_M[cursor.m]}` : "กิจกรรมที่กำลังจะถึง"}</h2>
