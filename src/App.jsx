@@ -234,20 +234,26 @@ textarea.inp{min-height:70px;resize:vertical;}
 
 /* ===================== SEED ===================== */
 const UNITS = [
-  { id: "u1", name: "ศิลปะ + สุขศึกษาฯ + การงานอาชีพ", short: "ศป", type: "กลุ่มสาระการเรียนรู้" },
-  { id: "u2", name: "คณิตศาสตร์", short: "คณ", type: "กลุ่มสาระการเรียนรู้" },
-  { id: "u3", name: "สังคมศึกษา ศาสนาและวัฒนธรรม", short: "สค", type: "กลุ่มสาระการเรียนรู้" },
-  { id: "u4", name: "วิทยาศาสตร์และเทคโนโลยี", short: "วท", type: "กลุ่มสาระการเรียนรู้" },
-  { id: "u5", name: "ภาษาต่างประเทศ", short: "ตป", type: "กลุ่มสาระการเรียนรู้" },
-  { id: "u6", name: "ภาษาไทย + แนะแนว", short: "ทย", type: "กลุ่มสาระการเรียนรู้" },
-  { id: "g1", name: "กลุ่มบริหารวิชาการ", short: "วช", type: "กลุ่มบริหารงาน" },
-  { id: "g2", name: "หัวหน้าระดับชั้น", short: "หน", type: "กลุ่มบริหารงาน" },
-  { id: "g3", name: "กลุ่มบริหารงบประมาณ", short: "งป", type: "กลุ่มบริหารงาน" },
-  { id: "g4", name: "กลุ่มบริหารทั่วไป", short: "ทว", type: "กลุ่มบริหารงาน" },
-  { id: "g5", name: "กลุ่มบริหารงานบุคคล", short: "บค", type: "กลุ่มบริหารงาน" },
+  { id: "s1", name: "ภาษาไทย", short: "ทย", type: "กลุ่มสาระการเรียนรู้" },
+  { id: "s2", name: "คณิตศาสตร์", short: "คณ", type: "กลุ่มสาระการเรียนรู้" },
+  { id: "s3", name: "วิทยาศาสตร์และเทคโนโลยี", short: "วท", type: "กลุ่มสาระการเรียนรู้" },
+  { id: "s4", name: "สังคมศึกษา ศาสนาและวัฒนธรรม", short: "สค", type: "กลุ่มสาระการเรียนรู้" },
+  { id: "s5", name: "สุขศึกษาและพลศึกษา", short: "สข", type: "กลุ่มสาระการเรียนรู้" },
+  { id: "s6", name: "ศิลปะ", short: "ศป", type: "กลุ่มสาระการเรียนรู้" },
+  { id: "s7", name: "การงานอาชีพ", short: "กง", type: "กลุ่มสาระการเรียนรู้" },
+  { id: "s8", name: "ภาษาต่างประเทศ", short: "ตป", type: "กลุ่มสาระการเรียนรู้" },
+  { id: "s9", name: "กิจกรรมพัฒนาผู้เรียน", short: "กพ", type: "กลุ่มสาระการเรียนรู้" },
+  { id: "b1", name: "กลุ่มบริหารวิชาการ", short: "วช", type: "กลุ่มบริหาร" },
+  { id: "b2", name: "กลุ่มบริหารงบประมาณ", short: "งป", type: "กลุ่มบริหาร" },
+  { id: "b3", name: "กลุ่มบริหารทั่วไป", short: "ทว", type: "กลุ่มบริหาร" },
+  { id: "b4", name: "กลุ่มบริหารงานบุคคล", short: "บค", type: "กลุ่มบริหาร" },
 ];
+/* แปลงรหัสกลุ่มเดิมให้ตรงโครงสร้างใหม่ เผื่อมีข้อมูลที่บันทึกไว้ก่อนหน้า */
+const REMAP = { u1: "s6", u2: "s2", u3: "s4", u4: "s3", u5: "s8", u6: "s1",
+  g1: "b1", g2: "", g3: "b2", g4: "b3", g5: "b4" };
+
 const COLORS = ["#E01B6E", "#3B72E8", "#17A673", "#EF8033", "#7B54D3", "#0E9BA8",
-  "#D9A208", "#E14848", "#2C56B8", "#B0468C", "#4B7A3F"];
+  "#D9A208", "#B0468C", "#4B7A3F", "#16205C", "#C2410C", "#0F766E", "#7E1D5C"];
 
 /* ปีการศึกษาไทย: เดือน พ.ค.–ธ.ค. = ปี พ.ศ. ปัจจุบัน, ม.ค.–เม.ย. = ปี พ.ศ. ก่อนหน้า */
 const ACAD_YEAR = (() => {
@@ -402,6 +408,7 @@ export default function App() {
   const [toast, setToast] = useState(null);
   const [modal, setModal] = useState(null);
   const [filter, setFilter] = useState("all");
+  const [sortBy, setSortBy] = useState("no");
   const [myUnit, setMyUnit] = useState("");
   const [cursor, setCursor] = useState(() => { const d = new Date(); return { y: d.getFullYear(), m: d.getMonth() }; });
   const [sel, setSel] = useState(TODAY);
@@ -471,7 +478,8 @@ export default function App() {
         d = {
           ...d,
           meta: { ...SEED.meta, ...d.meta, year: d.meta && d.meta.year === "ปีการศึกษา 2568" ? SEED.meta.year : (d.meta || {}).year || SEED.meta.year },
-          activities: d.activities.map((a) => ({ target: "", contact: "", docUrl: "", result: "", ...a })),
+          activities: d.activities.map((a) => ({ target: "", contact: "", docUrl: "", result: "", ...a,
+            unitId: REMAP[a.unitId] !== undefined ? REMAP[a.unitId] : a.unitId })),
         };
       }
       setData(d); setSyncAt(new Date());
@@ -602,12 +610,21 @@ export default function App() {
           </div>
         )}
 
-        <div className="chips" style={{ marginTop: 18 }}>
-          <button className={"chip" + (myUnit === "" ? " on" : "")} onClick={() => pickUnit("")}>ดูทุกกลุ่ม</button>
-          {data.units.map((u) => (
-            <button key={u.id} className={"chip" + (myUnit === u.id ? " on" : "")} onClick={() => pickUnit(u.id)}>
-              <span className="dot" style={{ background: colorOf(u.id) }} />{u.name}
-            </button>
+        <div style={{ marginTop: 18 }}>
+          <div className="chips" style={{ marginBottom: 10 }}>
+            <button className={"chip" + (myUnit === "" ? " on" : "")} onClick={() => pickUnit("")}>ดูทุกกลุ่ม</button>
+          </div>
+          {["กลุ่มสาระการเรียนรู้", "กลุ่มบริหาร"].map((t) => (
+            <div key={t} style={{ marginBottom: 10 }}>
+              <div className="usub" style={{ marginBottom: 6 }}>{t}</div>
+              <div className="chips" style={{ marginBottom: 0 }}>
+                {data.units.filter((u) => u.type === t).map((u) => (
+                  <button key={u.id} className={"chip" + (myUnit === u.id ? " on" : "")} onClick={() => pickUnit(u.id)}>
+                    <span className="dot" style={{ background: colorOf(u.id) }} />{u.name}
+                  </button>
+                ))}
+              </div>
+            </div>
           ))}
         </div>
 
@@ -708,7 +725,9 @@ export default function App() {
   const Acts = () => {
     const list = acts.filter((a) => filter === "all" ? true
       : filter === "mine" ? (myUnit && a.unitId === myUnit)
-      : statusOf(a) === filter);
+      : statusOf(a) === filter)
+      .sort((a, b) => sortBy === "no" ? a.no - b.no
+        : (a.date || "9999").localeCompare(b.date || "9999") || a.no - b.no);
     return (
       <>
         <div className="sectitle" style={{ marginTop: 0 }}>
@@ -726,6 +745,10 @@ export default function App() {
             <button className={"chip" + (filter === "done" ? " on" : "")} onClick={() => setFilter("done")}>
               สรุปแล้ว ({stats.done})</button>
           </>}
+          <button className="chip" style={{ marginLeft: "auto" }}
+            onClick={() => setSortBy(sortBy === "no" ? "date" : "no")}>
+            ⇅ {sortBy === "no" ? "เรียงตามเลขงาน" : "เรียงตามวันที่"}
+          </button>
         </div>
         {list.length === 0 ? (
           <div className="card empty"><Care size={84} mood="search" />
@@ -1000,7 +1023,11 @@ export default function App() {
             <div className="field"><label>กลุ่มผู้รับผิดชอบ</label>
               <select className="inp" value={f.unitId} onChange={(e) => set("unitId", e.target.value)}>
                 <option value="">— ยังไม่มอบหมาย —</option>
-                {data.units.map((u) => <option key={u.id} value={u.id}>{u.name}</option>)}
+                {["กลุ่มสาระการเรียนรู้", "กลุ่มบริหาร"].map((t) => (
+                  <optgroup key={t} label={t}>
+                    {data.units.filter((u) => u.type === t).map((u) => <option key={u.id} value={u.id}>{u.name}</option>)}
+                  </optgroup>
+                ))}
               </select></div>
           </div>
           <div className="field"><label>ชื่อกิจกรรม</label>
@@ -1130,6 +1157,38 @@ export default function App() {
             onClick={() => { save({ ...data, meta: m }, "บันทึกการตั้งค่าแล้ว"); setModal(null); }}>บันทึกการตั้งค่า</button>
 
           <div style={{ marginTop: 22, paddingTop: 18, borderTop: "1px solid var(--line)" }}>
+            <h4 style={{ fontSize: 14.5 }}>สำรองและกู้คืนข้อมูล</h4>
+            <p style={{ fontSize: 13, color: "var(--gray)", margin: "4px 0 12px" }}>
+              ดาวน์โหลดไฟล์สำรองเก็บไว้ในเครื่อง หากข้อมูลเสียหายให้เลือกไฟล์เดิมกลับเข้ามาได้
+            </p>
+            <div style={{ display: "flex", gap: 9, flexWrap: "wrap", alignItems: "center" }}>
+              <button className="btn btn-g" onClick={() => {
+                download(`สำรองข้อมูล-${data.meta.year}.json`, JSON.stringify(data, null, 2), "application/json");
+                say("ดาวน์โหลดไฟล์สำรองแล้ว");
+              }}>⬇ ดาวน์โหลดไฟล์สำรอง</button>
+              <label className="btn btn-g" style={{ cursor: "pointer" }}>
+                ⬆ กู้คืนจากไฟล์
+                <input type="file" accept="application/json" style={{ display: "none" }}
+                  onChange={(e) => {
+                    const file = e.target.files && e.target.files[0];
+                    if (!file) return;
+                    const fr = new FileReader();
+                    fr.onload = () => {
+                      try {
+                        const j = JSON.parse(fr.result);
+                        if (!j || !Array.isArray(j.activities)) throw new Error("bad");
+                        save({ ...SEED, ...j, units: Array.isArray(j.units) && j.units.length ? j.units : SEED.units }, "กู้คืนข้อมูลแล้ว");
+                        setModal(null);
+                      } catch (err) { say("ไฟล์ไม่ถูกต้อง", "!"); }
+                    };
+                    fr.readAsText(file);
+                  }} />
+              </label>
+            </div>
+          </div>
+
+
+          <div style={{ marginTop: 22, paddingTop: 18, borderTop: "1px solid var(--line)" }}>
             <h4 style={{ fontSize: 14.5 }}>เริ่มปีการศึกษาใหม่</h4>
             <p style={{ fontSize: 13, color: "var(--gray)", margin: "4px 0 12px" }}>
               เก็บรายการงานและกลุ่มผู้รับผิดชอบไว้ แต่ล้างวันที่ ผลการดำเนินงาน และรายชื่อผู้ไม่เข้าร่วมทั้งหมด
@@ -1175,6 +1234,58 @@ export default function App() {
           <button className="btn btn-p" style={{ width: "100%" }} onClick={add} disabled={lines.length === 0}>
             เพิ่ม {lines.length} กิจกรรม
           </button>
+        </div>
+      </div>
+    );
+  };
+
+  const UnitsModal = () => {
+    const [list, setList] = useState(data.units);
+    const [name, setName] = useState("");
+    const [type, setType] = useState("กลุ่มสาระการเรียนรู้");
+    const used = (id) => data.activities.filter((a) => a.unitId === id).length;
+    const add = () => {
+      if (!name.trim()) return;
+      setList([...list, { id: "x" + uid(), name: name.trim(), short: name.trim().slice(0, 2), type }]);
+      setName("");
+    };
+    return (
+      <div className="ovl" onClick={() => setModal(null)}>
+        <div className="modal" onClick={(e) => e.stopPropagation()}>
+          <div className="mhead"><div><h3>จัดการกลุ่มผู้รับผิดชอบ</h3>
+            <p>แก้ชื่อและเพิ่มกลุ่มได้ที่นี่ ส่วนการลบกลุ่มต้องทำในตาราง activity360_units บน Supabase</p></div>
+            <button className="x" onClick={() => setModal(null)}>✕</button></div>
+          {["กลุ่มสาระการเรียนรู้", "กลุ่มบริหาร"].map((t) => (
+            <div key={t} style={{ marginBottom: 14 }}>
+              <div className="usub" style={{ marginBottom: 6 }}>{t}</div>
+              <div className="plist">
+                {list.filter((u) => u.type === t).map((u) => (
+                  <div className="prow" key={u.id}>
+                    <div className="pav" style={{ background: colorOf(u.id), color: "#fff" }}>{u.short}</div>
+                    <input className="inp" style={{ flex: 1, padding: "6px 10px" }} value={u.name}
+                      onChange={(e) => setList(list.map((x) => x.id === u.id ? { ...x, name: e.target.value, short: e.target.value.slice(0, 2) } : x))} />
+                    <span className="usub" style={{ whiteSpace: "nowrap" }}>{used(u.id)} งาน</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+          <div className="row2">
+            <div className="field"><label>เพิ่มกลุ่มใหม่</label>
+              <input className="inp" value={name} onChange={(e) => setName(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && add()} placeholder="ชื่อกลุ่ม" /></div>
+            <div className="field"><label>ประเภท</label>
+              <select className="inp" value={type} onChange={(e) => setType(e.target.value)}>
+                <option>กลุ่มสาระการเรียนรู้</option>
+                <option>กลุ่มบริหาร</option>
+              </select></div>
+          </div>
+          <button className="btn btn-n" onClick={add} disabled={!name.trim()}>+ เพิ่มกลุ่ม</button>
+          <div style={{ display: "flex", gap: 9, marginTop: 20 }}>
+            <button className="btn btn-p" onClick={() => { save({ ...data, units: list }, "บันทึกรายชื่อกลุ่มแล้ว"); setModal(null); }}>
+              บันทึก {list.length} กลุ่ม</button>
+            <button className="btn btn-g" onClick={() => setModal(null)}>ยกเลิก</button>
+          </div>
         </div>
       </div>
     );
@@ -1234,6 +1345,7 @@ export default function App() {
             <button className="navitem" onClick={() => setModal({ type: "edit", id: null })}><span className="ic">➕</span>เพิ่มกิจกรรม</button>
             <button className="navitem" onClick={() => setModal({ type: "quick" })}><span className="ic">📝</span>สรุปหลังกิจกรรม</button>
             <button className="navitem" onClick={() => setModal({ type: "bulk" })}><span className="ic">📥</span>เพิ่มหลายงานพร้อมกัน</button>
+            <button className="navitem" onClick={() => setModal({ type: "units" })}><span className="ic">👥</span>จัดการกลุ่ม</button>
             <button className="navitem" onClick={() => setModal({ type: "settings" })}><span className="ic">⚙</span>ตั้งค่าระบบ</button>
             <button className="navitem" onClick={leaveAdmin}><span className="ic">🚪</span>ออกจากระบบผู้ดูแล</button>
           </>
@@ -1286,6 +1398,7 @@ export default function App() {
       {modal && modal.type === "settings" && <SettingsModal />}
       {modal && modal.type === "quick" && <QuickModal />}
       {modal && modal.type === "bulk" && <BulkModal />}
+      {modal && modal.type === "units" && <UnitsModal />}
 
       {toast && <div className="toast"><span>{toast.icon}</span>{toast.msg}</div>}
     </div>
