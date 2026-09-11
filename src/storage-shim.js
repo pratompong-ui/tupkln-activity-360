@@ -50,14 +50,14 @@ async function loadSharedData() {
 
   const s = settingsRes.data || {};
   const units = (unitsRes.data || []).map((u) => ({ id: u.id, name: u.name, short: u.short, type: u.type }));
-  const activities = (next.activities || []).map((a, i) => ({
+  const activities = (actsRes.data || []).map((a) => {
     const priv = privateByActivity.get(a.id) || {};
     const absentees = admin
       ? (absentByActivity.get(a.id) || [])
       : Array.from({ length: a.absent_count || 0 }, (_, i) => ({ id: `hidden-${a.id}-${i}`, name: '', unit: '', reason: '' }));
     return {
       id: a.id,
-      no: Number(a.no) > 0 ? Number(a.no) : i + 1,
+      no: a.no,
       name: a.name || '',
       unitId: a.unit_id || '',
       date: a.activity_date || '',
@@ -66,6 +66,9 @@ async function loadSharedData() {
       place: a.place || '',
       dress: a.dress || '',
       target: a.target_group || '',
+      cat: a.category || '',
+      albumUrl: a.album_url || '',
+      joinCount: a.join_count == null ? '' : String(a.join_count),
       contact: admin ? (priv.contact || '') : '',
       docUrl: a.doc_url || (admin ? (priv.doc_url || '') : ''),
       result: a.result || '',
@@ -106,9 +109,9 @@ async function persistSharedData(next) {
     if (error) throw error;
   }
 
-  const activities = (next.activities || []).map((a) => ({
+  const activities = (next.activities || []).map((a, i) => ({
     id: a.id,
-    no: Number(a.no),
+    no: Number(a.no) > 0 ? Number(a.no) : i + 1,
     name: a.name || '',
     unit_id: a.unitId || null,
     activity_date: a.date || null,
@@ -117,6 +120,9 @@ async function persistSharedData(next) {
     place: a.place || '',
     dress: a.dress || '',
     target_group: a.target || '',
+    category: a.cat || '',
+    album_url: a.albumUrl || '',
+    join_count: a.joinCount === '' || a.joinCount == null ? null : Number(a.joinCount),
     doc_url: a.docUrl || '',
     result: a.result || '',
     closed: !!a.closed,
@@ -134,11 +140,14 @@ async function persistSharedData(next) {
   if (activities.length) {
     let { error } = await supabase.from('activity360_activities').upsert(activities);
     // ฐานข้อมูลที่ยังไม่ได้เพิ่มคอลัมน์ใหม่ ให้ลองบันทึกใหม่โดยตัดคอลัมน์นั้นออก
-    if (error && /activity_end_date|doc_url|column|schema cache/i.test(error.message || '')) {
+    if (error && /activity_end_date|doc_url|category|album_url|join_count|column|schema cache/i.test(error.message || '')) {
       const trimmed = activities.map((r) => {
         const c = { ...r };
         delete c.activity_end_date;
         delete c.doc_url;
+        delete c.category;
+        delete c.album_url;
+        delete c.join_count;
         return c;
       });
       const retry = await supabase.from('activity360_activities').upsert(trimmed);
