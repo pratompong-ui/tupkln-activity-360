@@ -201,6 +201,106 @@ textarea.inp{min-height:70px;resize:vertical;}
 .check circle{animation:pop .3s ease both;}
 .check path{stroke-dasharray:30;stroke-dashoffset:30;animation:draw .45s .15s ease forwards;}
 
+/* ---------- ลูกเล่นภาพและการเคลื่อนไหว ---------- */
+@keyframes floaty{0%,100%{transform:translateY(0);}50%{transform:translateY(-9px);}}
+@keyframes floaty2{0%,100%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(-15px) rotate(7deg);}}
+@keyframes pulsering{0%{box-shadow:0 0 0 0 rgba(224,27,110,.30);}70%{box-shadow:0 0 0 9px rgba(224,27,110,0);}100%{box-shadow:0 0 0 0 rgba(224,27,110,0);}}
+@keyframes growbar{from{transform:scaleY(.2);opacity:0;}to{transform:scaleY(1);opacity:1;}}
+@keyframes sheen{0%{transform:translateX(-130%);}55%,100%{transform:translateX(240%);}}
+@keyframes popin{from{opacity:0;transform:translateY(14px) scale(.97);}to{opacity:1;transform:none;}}
+
+.float{animation:floaty 5.5s ease-in-out infinite;}
+.hero:before{content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:radial-gradient(rgba(255,255,255,.15) 1px,transparent 1px);background-size:22px 22px;opacity:.45;}
+.hero .bubble{position:absolute;border-radius:50%;background:rgba(255,255,255,.10);pointer-events:none;z-index:1;}
+.hero .b1{width:130px;height:130px;left:-38px;bottom:-56px;animation:floaty 9s ease-in-out infinite;}
+.hero .b2{width:60px;height:60px;left:40%;top:-24px;animation:floaty2 12s ease-in-out infinite;}
+.hero .b3{width:24px;height:24px;left:26%;bottom:16px;background:rgba(255,94,157,.40);animation:floaty 7s ease-in-out infinite;}
+.hero h1,.hero p,.herochips{position:relative;z-index:2;}
+
+.stat{position:relative;overflow:hidden;}
+.stat .sic{transition:transform .26s cubic-bezier(.22,1.2,.36,1);}
+.stat:hover .sic{transform:scale(1.1) rotate(-5deg);}
+.stat:after{content:"";position:absolute;top:0;bottom:0;width:38%;left:0;pointer-events:none;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:translateX(-130%);}
+.stat:hover:after{animation:sheen 1.1s ease;}
+
+.cday.today{animation:pulsering 3.4s ease-out infinite;}
+.pill{transition:transform .16s ease,filter .16s ease;}
+.cday:hover .pill{transform:translateX(2px);filter:brightness(1.07);}
+
+.att{animation:popin .42s cubic-bezier(.22,1,.36,1) both;}
+.att:nth-child(2){animation-delay:.05s;} .att:nth-child(3){animation-delay:.10s;}
+.att:nth-child(4){animation-delay:.15s;} .att:nth-child(5){animation-delay:.20s;}
+.att:nth-child(6){animation-delay:.25s;} .att:nth-child(7){animation-delay:.30s;}
+.att:nth-child(n+8){animation-delay:.34s;}
+.prow{transition:transform .16s ease,background .18s ease;}
+.prow:hover{transform:translateX(3px);background:#F5EDE7;}
+
+.navitem.on{position:relative;}
+.navitem.on:before{content:"";position:absolute;left:3px;top:9px;bottom:9px;width:3px;border-radius:3px;
+  background:var(--pink);animation:growbar .3s ease both;}
+.btn-p:hover,.btn-n:hover{transform:translateY(-1px);}
+.arrow{transition:background .18s ease,transform .18s cubic-bezier(.22,1.2,.36,1);}
+.arrow:hover{transform:scale(1.08);}
+.chip{transition:all .18s cubic-bezier(.22,1.2,.36,1);}
+.chip:hover{transform:translateY(-1px);}
+.empty svg{animation:floaty 4.5s ease-in-out infinite;}
+
+/* ---------- การ์ดกิจกรรมถัดไป / ฉลอง / ภาพประจำเดือน ---------- */
+.nextcard{position:relative;overflow:hidden;border-radius:24px;padding:20px 22px;margin-top:16px;
+  background:linear-gradient(120deg,#FFF1F6 0%,#FFE7F0 45%,#EEF2FF 100%);
+  display:flex;gap:18px;align-items:center;box-shadow:0 2px 14px rgba(22,32,92,.06);}
+.nextcard .nlab{font-size:12px;font-weight:700;color:var(--pink);letter-spacing:.04em;}
+.nextcard h3{font-size:19px;line-height:1.4;margin:6px 0 8px;}
+.nextcard .nmeta{font-size:13.5px;color:#4A5069;display:flex;gap:14px;flex-wrap:wrap;}
+.countbox{flex-shrink:0;width:96px;height:96px;border-radius:26px;background:#fff;display:flex;
+  flex-direction:column;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(224,27,110,.16);}
+.countbox b{font-size:32px;line-height:1;color:var(--pink);}
+.countbox span{font-size:12px;color:var(--gray);margin-top:3px;}
+.monthemoji{font-size:20px;margin-left:2px;}
+
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:120;overflow:hidden;}
+.confetti i{position:absolute;top:-14px;width:9px;height:14px;border-radius:2px;opacity:.95;
+  animation:fall 2.6s cubic-bezier(.3,.7,.5,1) forwards;}
+@keyframes fall{0%{transform:translateY(-10vh) rotate(0deg);}100%{transform:translateY(108vh) rotate(680deg);}}
+.partybox{position:fixed;left:50%;top:34%;transform:translate(-50%,-50%);z-index:121;background:#fff;
+  border-radius:26px;padding:24px 30px;text-align:center;box-shadow:0 24px 60px rgba(16,24,64,.26);
+  animation:pop .35s cubic-bezier(.22,1.2,.36,1);}
+
+/* ---------- กราฟและลูกเล่นเพิ่มเติม ---------- */
+@keyframes gradmove{0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
+@keyframes growbarv{from{height:0;}}
+@keyframes growbarh{from{width:0;}}
+@keyframes bounce{0%,100%{transform:translateY(0);}30%{transform:translateY(-14px);}55%{transform:translateY(0);}75%{transform:translateY(-6px);}}
+.hero{background-size:180% 180%;animation:gradmove 18s ease-in-out infinite;}
+.pagewrap{animation:popin .34s cubic-bezier(.22,1,.36,1) both;}
+
+.att:before{content:"";position:absolute;left:0;right:0;top:0;height:3px;opacity:0;transition:opacity .22s ease;
+  background:linear-gradient(90deg,var(--pink-2),var(--navy));}
+.att:hover:before{opacity:1;}
+
+.hmascot{cursor:pointer;}
+.hmascot.bounce{animation:bounce .9s cubic-bezier(.28,.9,.4,1);}
+.bubble-say{position:absolute;right:8px;top:-6px;background:#fff;color:var(--ink);border-radius:16px 16px 4px 16px;
+  padding:9px 14px;font-size:13.5px;max-width:230px;box-shadow:0 8px 22px rgba(16,24,64,.22);z-index:5;
+  animation:pop .28s cubic-bezier(.22,1.2,.36,1);}
+
+.chartcard{display:flex;gap:26px;flex-wrap:wrap;}
+.mbars{display:flex;align-items:flex-end;gap:8px;height:130px;flex:1;min-width:280px;}
+.mbar{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;justify-content:flex-end;height:100%;}
+.mbar .bcol{width:100%;border-radius:9px 9px 4px 4px;background:linear-gradient(180deg,var(--pink-2),var(--pink));
+  animation:growbarv .9s cubic-bezier(.22,1,.36,1) both;min-height:4px;position:relative;}
+.mbar.zero .bcol{background:#EFE8E3;}
+.mbar.now .bcol{background:linear-gradient(180deg,#4C63C9,var(--navy));}
+.mbar small{font-size:10.5px;color:var(--gray);}
+.mbar b{font-size:11.5px;color:var(--navy);}
+.catrow{display:flex;align-items:center;gap:10px;margin-bottom:9px;}
+.catrow .cname{font-size:13.5px;width:132px;flex-shrink:0;}
+.catrow .ctrack{flex:1;height:14px;border-radius:20px;background:#F2ECE8;overflow:hidden;}
+.catrow .cfill{height:100%;border-radius:20px;animation:growbarh 1s cubic-bezier(.22,1,.36,1) both;}
+.catrow .cnum2{font-size:13px;font-weight:700;color:var(--navy);width:26px;text-align:right;}
+
 @media (max-width:900px){
   .tp{flex-direction:column;}
   .sidebar{display:none;}
@@ -259,6 +359,28 @@ const REMAP = { u1: "s6", u2: "s2", u3: "s4", u4: "s3", u5: "s8", u6: "s1",
 
 const COLORS = ["#E01B6E", "#3B72E8", "#17A673", "#EF8033", "#7B54D3", "#0E9BA8",
   "#D9A208", "#B0468C", "#4B7A3F", "#16205C", "#C2410C", "#0F766E", "#7E1D5C"];
+
+/* ประเภทกิจกรรม ใช้แสดงไอคอนและใช้กรองในรายงาน */
+const CARE_SAYS = [
+  "วันนี้มีอะไรให้ช่วยไหมครับ",
+  "อย่าลืมกดเพิ่มลง Google ปฏิทินนะครับ",
+  "กิจกรรมไหนจบแล้ว อย่าลืมสรุปด้วยนะครับ",
+  "ขอบคุณคุณครูที่ดูแลนักเรียนครับ",
+  "พักสายตาสักครู่ก็ได้นะครับ",
+];
+
+const CATS = [
+  { id: "royal", label: "วันสำคัญของชาติ ศาสนา พระมหากษัตริย์", icon: "👑" },
+  { id: "academic", label: "วิชาการและการเรียนการสอน", icon: "📚" },
+  { id: "sport", label: "กีฬาและสุขภาพ", icon: "🏃" },
+  { id: "moral", label: "คุณธรรม จริยธรรม ลูกเสือ", icon: "🤝" },
+  { id: "art", label: "ศิลปะ ดนตรี วัฒนธรรม", icon: "🎨" },
+  { id: "guide", label: "แนะแนว ศึกษาดูงาน", icon: "🧭" },
+  { id: "admin", label: "ประชุม งานบริหาร งานประกัน", icon: "🗂" },
+  { id: "other", label: "อื่น ๆ", icon: "📌" },
+];
+const catOf = (id) => CATS.find((c) => c.id === id);
+const MONTH_EMOJI = ["🎋","💐","🌸","🔥","🌱","☔","🕯","💙","🍂","🎗","🌾","❄"];
 
 /* ปีการศึกษาไทย: เดือน พ.ค.–ธ.ค. = ปี พ.ศ. ปัจจุบัน, ม.ค.–เม.ย. = ปี พ.ศ. ก่อนหน้า */
 const ACAD_YEAR = (() => {
@@ -460,6 +582,15 @@ export default function App() {
   const [cursor, setCursor] = useState(() => { const d = new Date(); return { y: d.getFullYear(), m: d.getMonth() }; });
   const [sel, setSel] = useState(TODAY);
   const [syncAt, setSyncAt] = useState(null);
+  const [party, setParty] = useState(false);
+  const [saying, setSaying] = useState(null);
+  const [bouncing, setBouncing] = useState(false);
+  const pokeCare = () => {
+    setBouncing(true);
+    setSaying(CARE_SAYS[Math.floor(Math.random() * CARE_SAYS.length)]);
+    setTimeout(() => setBouncing(false), 950);
+    setTimeout(() => setSaying(null), 3200);
+  };
   const dataRef = useRef(null);
   const modalRef = useRef(null);
   useEffect(() => { dataRef.current = data; }, [data]);
@@ -525,7 +656,8 @@ export default function App() {
         d = {
           ...d,
           meta: { ...SEED.meta, ...d.meta, year: d.meta && d.meta.year === "ปีการศึกษา 2568" ? SEED.meta.year : (d.meta || {}).year || SEED.meta.year },
-          activities: d.activities.map((a) => ({ target: "", contact: "", docUrl: "", result: "", dateEnd: "", ...a,
+          activities: d.activities.map((a) => ({ target: "", contact: "", docUrl: "", result: "", dateEnd: "",
+            cat: "", albumUrl: "", joinCount: "", ...a,
             unitId: REMAP[a.unitId] !== undefined ? REMAP[a.unitId] : a.unitId })),
         };
       }
@@ -538,11 +670,19 @@ export default function App() {
   const say = (msg, icon = "✓") => { setToast({ msg, icon }); setTimeout(() => setToast(null), 2400); };
   const save = async (next, msg) => {
     setData(next);
-    try { await window.storage.set(KEY, JSON.stringify(next), true); setSyncAt(new Date()); if (msg) say(msg); }
+    try { await window.storage.set(KEY, JSON.stringify(next), true); setSyncAt(new Date()); if (msg) say(msg); celebrate(next); }
     catch (e) {
       const m = (e && e.message) ? String(e.message) : "";
       say(m ? "บันทึกไม่สำเร็จ: " + m.slice(0, 90) : "บันทึกไม่สำเร็จ ลองอีกครั้ง", "!");
       console.error("save failed:", e);
+    }
+  };
+  const celebrate = (next) => {
+    const A = next.activities || [];
+    const named = A.filter((a) => a.name);
+    if (named.length >= 2 && named.every((a) => a.closed)) {
+      setParty(true);
+      setTimeout(() => setParty(false), 3200);
     }
   };
   const patchAct = (id, patch, msg) =>
@@ -600,6 +740,7 @@ export default function App() {
       <div className={"att s-" + s}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
           <span className="attno">งานที่ {a.no}</span>
+          {catOf(a.cat) && <span className="badge b-none" title={catOf(a.cat).label}>{catOf(a.cat).icon} {catOf(a.cat).label.split(" ")[0]}</span>}
           {u && <span className="badge" style={{ background: colorOf(a.unitId) + "1F", color: colorOf(a.unitId) }}>{u.name}</span>}
           {admin && <span className={"badge " + STATUS[s].cls} style={{ marginLeft: "auto" }}>{STATUS[s].icon} {STATUS[s].label}</span>}
         </div>
@@ -648,6 +789,7 @@ export default function App() {
     return (
       <>
         <div className="hero noprint-cal">
+          <span className="bubble b1" /><span className="bubble b2" /><span className="bubble b3" />
           <div className="htext">
             <h1>ปฏิทินกิจกรรมโรงเรียน</h1>
             <p>{myUnit
@@ -659,7 +801,11 @@ export default function App() {
               <span className="hchip">🗓 เดือนนี้ {monthList.length} กิจกรรม</span>
             </div>
           </div>
-          <div className="hmascot"><Care size={112} mood={tomorrowList.length ? "alert" : "hello"} /></div>
+          <div className={"hmascot float" + (bouncing ? " bounce" : "")} onClick={pokeCare}
+            title="แตะน้อง CARE ดูสิครับ">
+            {saying && <div className="bubble-say">{saying}</div>}
+            <Care size={112} mood={saying ? "happy" : tomorrowList.length ? "alert" : "hello"} />
+          </div>
         </div>
 
         {acts.length === 0 && (
@@ -672,6 +818,33 @@ export default function App() {
               onClick={() => setModal({ type: "edit", id: null, date: sel })}>+ เพิ่มกิจกรรมแรก</button>}
           </div>
         )}
+
+        {upcoming[0] && (() => {
+          const a = upcoming[0];
+          const d = Math.round((new Date(a.date + "T00:00:00") - new Date(TODAY + "T00:00:00")) / 864e5);
+          return (
+            <div className="nextcard noprint-cal">
+              <div className="countbox">
+                <b>{d <= 0 ? "วันนี้" : d}</b>
+                <span>{d <= 0 ? "ถึงกำหนดแล้ว" : "วันข้างหน้า"}</span>
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div className="nlab">กิจกรรมถัดไป</div>
+                <h3>{catOf(a.cat) ? catOf(a.cat).icon + " " : ""}{a.name || "ยังไม่ตั้งชื่อกิจกรรม"}</h3>
+                <div className="nmeta">
+                  <span>📅 {spanText(a)}{a.time ? " · " + a.time + " น." : ""}</span>
+                  {a.place && <span>📍 {a.place}</span>}
+                  {a.dress && <span>👔 {a.dress}</span>}
+                  <span>👥 {unitName(a.unitId) || "ยังไม่มอบหมาย"}</span>
+                </div>
+                <div style={{ display: "flex", gap: 9, marginTop: 13, flexWrap: "wrap" }}>
+                  <button className="btn btn-p btn-sm" onClick={() => setModal({ type: "view", id: a.id })}>ดูรายละเอียด</button>
+                  <a className="btn btn-g btn-sm" href={gcalUrl(a, unitName(a.unitId))} target="_blank" rel="noreferrer">+ Google ปฏิทิน</a>
+                </div>
+              </div>
+            </div>
+          );
+        })()}
 
         <div style={{ marginTop: 18 }} className="noprint-cal">
           <div className="chips" style={{ marginBottom: 10 }}>
@@ -694,7 +867,8 @@ export default function App() {
         <div className="card">
           <div className="calbar">
             <button className="arrow" onClick={() => move(-1)}>‹</button>
-            <div className="calmonth">{TH_M[cursor.m]} {cursor.y + 543}</div>
+            <div className="calmonth">{TH_M[cursor.m]} {cursor.y + 543}
+              <span className="monthemoji">{MONTH_EMOJI[cursor.m]}</span></div>
             <button className="arrow" onClick={() => move(1)}>›</button>
             <div style={{ marginLeft: "auto", display: "flex", gap: 8 }}>
               <button className="btn btn-g btn-sm"
@@ -724,7 +898,7 @@ export default function App() {
                   {list.slice(0, 2).map((a) => (
                     <span key={a.id} className={"pill" + (myUnit && a.unitId === myUnit ? " mine" : "")}
                       style={{ background: colorOf(a.unitId) }} title={a.name}>
-                      {a.date === c.key ? a.no + ". " : "↳ "}{a.name || "รอตั้งชื่อ"}</span>
+                      {a.date === c.key ? (catOf(a.cat) ? catOf(a.cat).icon + " " : a.no + ". ") : "↳ "}{a.name || "รอตั้งชื่อ"}</span>
                   ))}
                   {list.length > 2 && <span className="pmore">+{list.length - 2} กิจกรรม</span>}
                   <span className="cdots">
@@ -845,10 +1019,10 @@ export default function App() {
   const Report = () => {
     const csv = () => {
       const head = ["ลำดับ", "งานที่", "ชื่อกิจกรรม", "ผู้รับผิดชอบ", "ครูผู้ประสานงาน", "วันที่", "ถึงวันที่", "เวลา", "สถานที่",
-        "กลุ่มเป้าหมาย", "สถานะ", "จำนวนผู้ไม่เข้าร่วม", "รายชื่อผู้ไม่เข้าร่วม", "ผลการดำเนินงาน"];
+        "กลุ่มเป้าหมาย", "ประเภทกิจกรรม", "สถานะ", "ผู้เข้าร่วมจริง", "จำนวนผู้ไม่เข้าร่วม", "รายชื่อผู้ไม่เข้าร่วม", "ผลการดำเนินงาน", "อัลบั้มภาพ"];
       const rows = acts.map((a, i) => [i + 1, a.no, a.name, unitName(a.unitId), a.contact, thDate(a.date), thDate(a.dateEnd), a.time, a.place,
-        a.target, STATUS[statusOf(a)].label, a.absentees.length,
-        a.absentees.map((p) => p.name + (p.unit ? `(${p.unit})` : "")).join(" / "), a.result]);
+        a.target, (catOf(a.cat) || {}).label || "", STATUS[statusOf(a)].label, a.joinCount, a.absentees.length,
+        a.absentees.map((p) => p.name + (p.unit ? `(${p.unit})` : "")).join(" / "), a.result, a.albumUrl]);
       const body = [head, ...rows].map((r) => r.map((c) => `"${String(c == null ? "" : c).replace(/"/g, '""')}"`).join(",")).join("\n");
       download(`สรุปกิจกรรม-${data.meta.year}.csv`, "\uFEFF" + body, "text/csv;charset=utf-8;");
       say("ดาวน์โหลดไฟล์ CSV แล้ว");
@@ -878,6 +1052,52 @@ export default function App() {
             <div className="sic" style={{ background: "var(--softpink)", color: "var(--pink)" }}>🙋</div>
             <div className="snum"><CountUp n={stats.absent} /> <small>คน</small></div>
             <div className="slab">บันทึกผู้ไม่เข้าร่วมสะสม</div>
+          </div>
+        </div>
+
+        <div className="card" style={{ marginBottom: 14 }}>
+          <h3 style={{ fontSize: 16, marginBottom: 14 }}>ภาพรวมกิจกรรมทั้งปีการศึกษา</h3>
+          <div className="chartcard">
+            <div style={{ flex: 1, minWidth: 300 }}>
+              <div className="usub" style={{ marginBottom: 10 }}>จำนวนกิจกรรมรายเดือน</div>
+              {(() => {
+                const order = [4,5,6,7,8,9,10,11,0,1,2,3];
+                const counts = order.map((m) => acts.filter((a) => a.date && Number(a.date.slice(5, 7)) - 1 === m).length);
+                const max = Math.max(1, ...counts);
+                const nowM = new Date().getMonth();
+                return (
+                  <div className="mbars">
+                    {order.map((m, i) => (
+                      <div className={"mbar" + (counts[i] === 0 ? " zero" : "") + (m === nowM ? " now" : "")} key={m}>
+                        <b>{counts[i] || ""}</b>
+                        <div className="bcol" style={{ height: Math.max(4, (counts[i] / max) * 96) + "px",
+                          animationDelay: (i * 0.04).toFixed(2) + "s" }} />
+                        <small>{TH_MS[m].replace(".", "")}</small>
+                      </div>
+                    ))}
+                  </div>
+                );
+              })()}
+            </div>
+            <div style={{ flex: 1, minWidth: 290 }}>
+              <div className="usub" style={{ marginBottom: 10 }}>แยกตามประเภทกิจกรรม</div>
+              {(() => {
+                const rows = CATS.map((c) => ({ ...c, n: acts.filter((a) => a.cat === c.id).length }))
+                  .filter((c) => c.n > 0).sort((a, b) => b.n - a.n);
+                const max = Math.max(1, ...rows.map((r) => r.n));
+                if (!rows.length) return <div className="usub">ยังไม่ได้ระบุประเภทกิจกรรม</div>;
+                return rows.map((r, i) => (
+                  <div className="catrow" key={r.id}>
+                    <span className="cname">{r.icon} {r.label.split(" ")[0]}</span>
+                    <span className="ctrack">
+                      <span className="cfill" style={{ width: (r.n / max) * 100 + "%",
+                        background: COLORS[i % COLORS.length], animationDelay: (i * 0.06).toFixed(2) + "s" }} />
+                    </span>
+                    <span className="cnum2">{r.n}</span>
+                  </div>
+                ));
+              })()}
+            </div>
           </div>
         </div>
 
@@ -956,7 +1176,10 @@ export default function App() {
             {cur.target && <div>👥 ผู้เข้าร่วม: {cur.target}</div>}
             {cur.dress && <div>👔 การแต่งกาย: {cur.dress}</div>}
             {cur.contact && <div>📞 ผู้ประสานงาน: {cur.contact}</div>}
+            {catOf(cur.cat) && <div>{catOf(cur.cat).icon} ประเภท: {catOf(cur.cat).label}</div>}
+            {cur.joinCount && <div>🙋 ผู้เข้าร่วมจริง {cur.joinCount} คน</div>}
             {cur.docUrl && <div>📎 <a href={cur.docUrl} target="_blank" rel="noreferrer">เปิดคำสั่ง / เอกสารแนบ</a></div>}
+            {cur.albumUrl && <div>🖼 <a href={cur.albumUrl} target="_blank" rel="noreferrer">ดูอัลบั้มภาพกิจกรรม</a></div>}
             {cur.result && <div>📝 ผลการดำเนินงาน: {cur.result}</div>}
           </div>
 
@@ -1008,6 +1231,8 @@ export default function App() {
     const [unitTxt, setUnitTxt] = useState("");
     const [reason, setReason] = useState("");
     const [result, setResult] = useState(cur.result || "");
+    const [albumUrl, setAlbumUrl] = useState(cur.albumUrl || "");
+    const [joinCount, setJoinCount] = useState(cur.joinCount || "");
     const [ok, setOk] = useState(false);
     const add = () => {
       if (!name.trim()) return;
@@ -1015,7 +1240,7 @@ export default function App() {
       setName(""); setReason("");
     };
     const submit = async (closed) => {
-      await patchAct(cur.id, { absentees: list, result, closed }, closed ? "ส่งข้อมูลเรียบร้อย" : "บันทึกร่างแล้ว");
+      await patchAct(cur.id, { absentees: list, result, albumUrl, joinCount, closed }, closed ? "ส่งข้อมูลเรียบร้อย" : "บันทึกร่างแล้ว");
       if (closed) { setOk(true); setTimeout(() => setModal(null), 1100); } else setModal(null);
     };
     return (
@@ -1032,6 +1257,12 @@ export default function App() {
                 <div><h3>สรุปหลังกิจกรรม</h3>
                   <p>งานที่ {cur.no} · {cur.name || "ยังไม่ตั้งชื่อกิจกรรม"}</p></div>
                 <button className="x" onClick={() => setModal(null)}>✕</button>
+              </div>
+              <div className="row2">
+                <div className="field"><label>จำนวนผู้เข้าร่วม (คน)</label>
+                  <input className="inp" type="number" value={joinCount} onChange={(e) => setJoinCount(e.target.value)} placeholder="เช่น 780" /></div>
+                <div className="field"><label>ลิงก์อัลบั้มภาพกิจกรรม</label>
+                  <input className="inp" value={albumUrl} onChange={(e) => setAlbumUrl(e.target.value)} placeholder="วางลิงก์ Google Photos หรือ Drive" /></div>
               </div>
               <div className="field"><label>ผลการดำเนินงานโดยย่อ</label>
                 <textarea className="inp" value={result} onChange={(e) => setResult(e.target.value)}
@@ -1082,10 +1313,10 @@ export default function App() {
   const EditModal = () => {
     const isNew = !cur;
     const nextNo = Math.max(0, ...data.activities.map((a) => a.no)) + 1;
-    const [f, setF] = useState(cur || { no: nextNo, name: "", unitId: "", date: modal.date || "", dateEnd: "", time: "", place: "", dress: "", target: "", contact: "", docUrl: "" });
+    const [f, setF] = useState(cur || { no: nextNo, name: "", unitId: "", cat: "", albumUrl: "", joinCount: "", date: modal.date || "", dateEnd: "", time: "", place: "", dress: "", target: "", contact: "", docUrl: "" });
     const set = (k, v) => setF({ ...f, [k]: v });
     const submit = () => {
-      const body = { no: Number(f.no), name: f.name, unitId: f.unitId, date: f.date,
+      const body = { no: Number(f.no) > 0 ? Number(f.no) : nextNo, name: f.name, unitId: f.unitId, cat: f.cat || "", date: f.date,
         dateEnd: f.dateEnd && f.dateEnd > f.date ? f.dateEnd : "", time: f.time,
         place: f.place, dress: f.dress, target: f.target, contact: f.contact, docUrl: f.docUrl };
       if (isNew) save({ ...data, activities: [...data.activities, { id: "a" + uid(), ...body, result: "", closed: false, absentees: [], updatedAt: new Date().toISOString() }] }, "เพิ่มกิจกรรมแล้ว");
@@ -1115,6 +1346,11 @@ export default function App() {
                 ))}
               </select></div>
           </div>
+          <div className="field"><label>ประเภทกิจกรรม</label>
+            <select className="inp" value={f.cat || ""} onChange={(e) => set("cat", e.target.value)}>
+              <option value="">— ไม่ระบุ —</option>
+              {CATS.map((c) => <option key={c.id} value={c.id}>{c.icon} {c.label}</option>)}
+            </select></div>
           <div className="field"><label>ชื่อกิจกรรม</label>
             <textarea className="inp" value={f.name} onChange={(e) => set("name", e.target.value)}
               placeholder="เช่น พิธีลงนามถวายพระพรชัยมงคล ..." /></div>
@@ -1324,7 +1560,7 @@ export default function App() {
         const [name, unitTxt] = l.split("|").map((x) => (x || "").trim());
         const u = data.units.find((x) => unitTxt && (x.name === unitTxt || x.name.includes(unitTxt)));
         no += 1;
-        return { id: "a" + uid(), no, name, unitId: u ? u.id : "", date: "", dateEnd: "", time: "", place: "",
+        return { id: "a" + uid(), no, name, unitId: u ? u.id : "", cat: "", albumUrl: "", joinCount: "", date: "", dateEnd: "", time: "", place: "",
           dress: "", target: "", contact: "", docUrl: "", result: "", closed: false, absentees: [], updatedAt: new Date().toISOString() };
       });
       save({ ...data, activities: [...data.activities, ...added] }, `เพิ่ม ${added.length} กิจกรรมแล้ว`);
@@ -1482,9 +1718,11 @@ export default function App() {
           </div>
         </div>
 
-        {page === "cal" && <Calendar />}
-        {page === "acts" && <Acts />}
-        {page === "report" && <Report />}
+        <div className="pagewrap" key={page}>
+          {page === "cal" && <Calendar />}
+          {page === "acts" && <Acts />}
+          {page === "report" && <Report />}
+        </div>
       </main>
 
       <nav className="bnav">
@@ -1508,6 +1746,24 @@ export default function App() {
       {modal && modal.type === "bulk" && <BulkModal />}
       {modal && modal.type === "units" && <UnitsModal />}
 
+      {party && (
+        <>
+          <div className="confetti">
+            {Array.from({ length: 46 }).map((_, i) => (
+              <i key={i} style={{
+                left: (i * 2.2 + Math.random() * 2) + "%",
+                background: COLORS[i % COLORS.length],
+                animationDelay: (Math.random() * 0.7).toFixed(2) + "s",
+              }} />
+            ))}
+          </div>
+          <div className="partybox">
+            <Care size={92} mood="happy" />
+            <h3 style={{ marginTop: 6 }}>สรุปครบทุกกิจกรรมแล้ว</h3>
+            <p style={{ color: "var(--gray)", fontSize: 14, margin: "6px 0 0" }}>ขอบคุณคุณครูทุกท่านครับ</p>
+          </div>
+        </>
+      )}
       {toast && <div className="toast"><span>{toast.icon}</span>{toast.msg}</div>}
     </div>
   );
