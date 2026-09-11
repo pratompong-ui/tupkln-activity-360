@@ -132,7 +132,19 @@ async function persistSharedData(next) {
     if (error) throw error;
   }
   if (activities.length) {
-    const { error } = await supabase.from('activity360_activities').upsert(activities);
+    let { error } = await supabase.from('activity360_activities').upsert(activities);
+    // ฐานข้อมูลที่ยังไม่ได้เพิ่มคอลัมน์ใหม่ ให้ลองบันทึกใหม่โดยตัดคอลัมน์นั้นออก
+    if (error && /activity_end_date|doc_url|column|schema cache/i.test(error.message || '')) {
+      const trimmed = activities.map((r) => {
+        const c = { ...r };
+        delete c.activity_end_date;
+        delete c.doc_url;
+        return c;
+      });
+      const retry = await supabase.from('activity360_activities').upsert(trimmed);
+      error = retry.error;
+      if (!error) console.warn('บันทึกสำเร็จแบบตัดคอลัมน์ใหม่ออก กรุณารันสคริปต์ SQL เพิ่มคอลัมน์');
+    }
     if (error) throw error;
   }
 
