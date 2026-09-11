@@ -1,0 +1,17 @@
+{
+  "name": "TUPKLN Activity 360 — ปฏิทินกิจกรรมโรงเรียน",
+  "short_name": "ACTIVITY 360",
+  "description": "ปฏิทินกิจกรรมและบันทึกผู้ไม่เข้าร่วม โรงเรียนเตรียมอุดมศึกษาพัฒนาการเขลางค์นคร",
+  "lang": "th",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#16205C",
+  "theme_color": "#16205C",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
