@@ -8,3 +8,12 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <App />
   </React.StrictMode>
 );
+
+// ติดตั้งเป็นแอปบนมือถือได้ และเปิดดูได้แม้สัญญาณขาดช่วง
+if ("serviceWorker" in navigator && location.protocol === "https:") {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/sw.js").catch((err) => {
+      console.warn("ลงทะเบียน service worker ไม่สำเร็จ:", err);
+    });
+  });
+}
