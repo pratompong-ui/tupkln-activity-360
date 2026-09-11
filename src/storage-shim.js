@@ -50,14 +50,14 @@ async function loadSharedData() {
 
   const s = settingsRes.data || {};
   const units = (unitsRes.data || []).map((u) => ({ id: u.id, name: u.name, short: u.short, type: u.type }));
-  const activities = (actsRes.data || []).map((a) => {
+  const activities = (next.activities || []).map((a, i) => ({
     const priv = privateByActivity.get(a.id) || {};
     const absentees = admin
       ? (absentByActivity.get(a.id) || [])
       : Array.from({ length: a.absent_count || 0 }, (_, i) => ({ id: `hidden-${a.id}-${i}`, name: '', unit: '', reason: '' }));
     return {
       id: a.id,
-      no: a.no,
+      no: Number(a.no) > 0 ? Number(a.no) : i + 1,
       name: a.name || '',
       unitId: a.unit_id || '',
       date: a.activity_date || '',
