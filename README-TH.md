@@ -1,40 +1,25 @@
-# TUPKLN Activity 360 — Vercel Preview
+# TUPKLN Activity 360 — Shared Database Edition
 
-แพ็กเกจนี้ทำให้ไฟล์ JSX เดิมเปิดเป็น React/Vite และ Deploy บน Vercel ได้
+เวอร์ชันนี้ใช้ React + Vite + Supabase และออกแบบให้หลายอุปกรณ์เห็นข้อมูลกิจกรรมชุดเดียวกัน
 
-## สำคัญ
-เวอร์ชันนี้เป็น **Preview / Demo** เท่านั้น ข้อมูลถูกเก็บใน `localStorage` ของ browser แต่ละเครื่อง จึงไม่แชร์ข้อมูลระหว่างครูและไม่ควรใช้เก็บข้อมูลผู้ไม่เข้าร่วมกิจกรรมจริง
+## สิ่งที่เปลี่ยนจาก Preview
+- กิจกรรม กลุ่มงาน และการตั้งค่าระบบเก็บใน Supabase
+- ผู้ใช้ทั่วไปเปิดลิงก์แล้วอ่านปฏิทินได้โดยไม่ต้อง Login
+- รายชื่อผู้ไม่เข้าร่วมและข้อมูลผู้ประสานงานเป็นข้อมูลส่วนผู้ดูแล
+- ผู้ดูแลเข้าสู่ระบบด้วย Email Magic Link แทน PIN 1234
+- เปิด Realtime สำหรับปฏิทิน/กิจกรรม เพื่อให้หน้าจอที่เปิดอยู่รับการเปลี่ยนแปลงจากฐานข้อมูล
+- `กลุ่มของคุณครู` ยังเก็บใน localStorage เพราะเป็นค่าความชอบเฉพาะอุปกรณ์ ไม่ใช่ข้อมูลส่วนกลาง
+
+## Environment Variables บน Vercel
+เวอร์ชันที่จัดให้เชื่อมโปรเจกต์ Supabase ของโรงเรียนไว้แล้ว จึง Deploy ได้ทันทีโดยไม่ต้องกรอก Environment Variables เพิ่ม หากภายหลังต้องการเปลี่ยน Supabase project สามารถกำหนด `VITE_SUPABASE_URL` และ `VITE_SUPABASE_PUBLISHABLE_KEY` ใน Vercel เพื่อ override ค่าเดิมได้
+
+## Supabase Auth Redirect URL
+ใน Supabase > Authentication > URL Configuration ให้ใส่ Production URL ของ Vercel เช่น
+`https://tupkln-activity-360.vercel.app`
+ทั้ง Site URL และ Redirect URLs ที่อนุญาต
 
 ## ทดสอบในเครื่อง
-1. ติดตั้ง Node.js
-2. เปิด Terminal ในโฟลเดอร์นี้
-3. รัน `npm install`
-4. รัน `npm run dev`
-5. เปิด URL ที่ Vite แสดง
-
-## Deploy บน Vercel
-### วิธีแนะนำ: GitHub
-1. สร้าง GitHub repository ใหม่ เช่น `tupkln-activity-360`
-2. อัปโหลดไฟล์ทั้งหมดในโฟลเดอร์นี้
-3. เข้า Vercel > Add New > Project
-4. Import repository
-5. Framework Preset เลือก Vite (ส่วนใหญ่ระบบตรวจให้อัตโนมัติ)
-6. กด Deploy
-
-### ใช้ Vercel CLI
-ติดตั้ง CLI: `npm i -g vercel`
-จากนั้นรัน `vercel` และเมื่อพร้อมใช้งานจริงรัน `vercel --prod`
-
-## ก่อนเปิดใช้จริงกับครู
-ควรเปลี่ยนระบบข้อมูลกลางเป็น Supabase/Postgres และเพิ่มระบบ Login/Auth โดยอย่างน้อยต้องแยกสิทธิ์:
-- ผู้บริหาร / Admin: เพิ่ม แก้ไข ลบ และดูรายชื่อผู้ไม่เข้าร่วม
-- ครู: อ่านปฏิทินและข้อมูลกิจกรรมตามสิทธิ์
-- ผู้ใช้งานทั่วไป: ไม่ควรเห็นข้อมูลรายบุคคล
-
-ควรเปิด Row Level Security (RLS) และไม่เก็บ service-role/secret key ใน frontend
-
-## ไฟล์สำคัญ
-- `src/App.jsx` — โค้ดเดิมของ TUPKLN Activity 360
-- `src/storage-shim.js` — ทำให้ `window.storage` เดิมทำงานบน browser ผ่าน localStorage
-- `src/main.jsx` — จุดเริ่มต้น React
-- `vercel.json` — รองรับการ Deploy แบบ SPA บน Vercel
+```bash
+npm install
+npm run dev
+```

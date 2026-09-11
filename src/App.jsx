@@ -268,7 +268,7 @@ const KEY_DATES = [
 ];
 
 const SEED = {
-  meta: { school: "โรงเรียนเตรียมอุดมศึกษาพัฒนาการเขลางค์นคร", year: `ปีการศึกษา ${ACAD_YEAR}`, pin: "1234" },
+  meta: { school: "โรงเรียนเตรียมอุดมศึกษาพัฒนาการเขลางค์นคร", year: `ปีการศึกษา ${ACAD_YEAR}` },
   units: UNITS,
   activities: [],
 };
@@ -410,6 +410,33 @@ export default function App() {
   const modalRef = useRef(null);
   useEffect(() => { dataRef.current = data; }, [data]);
   useEffect(() => { modalRef.current = modal; }, [modal]);
+
+  useEffect(() => {
+    let alive = true;
+    const check = async () => {
+      try {
+        const ok = await window.activityAuth?.isAdmin?.();
+        if (alive) setAdmin(!!ok);
+      } catch (e) {}
+    };
+    check();
+    const offAuth = window.activityAuth?.onChange?.(async (ok) => {
+      if (!alive) return;
+      setAdmin(!!ok);
+      try {
+        const r = await window.storage.get(KEY, true);
+        if (r?.value) { setData(JSON.parse(r.value)); setSyncAt(new Date()); }
+      } catch (e) {}
+    });
+    const offRealtime = window.activityRealtime?.subscribe?.(async () => {
+      if (!alive || modalRef.current) return;
+      try {
+        const r = await window.storage.get(KEY, true);
+        if (r?.value) { setData(JSON.parse(r.value)); setSyncAt(new Date()); }
+      } catch (e) {}
+    });
+    return () => { alive = false; if (offAuth) offAuth(); if (offRealtime) offRealtime(); };
+  }, []);
 
   /* ดึงข้อมูลล่าสุดเองทุก 45 วินาที และทุกครั้งที่กลับมาที่หน้าจอ
      ข้ามการดึงระหว่างที่เปิดหน้าต่างกรอกข้อมูลอยู่ เพื่อไม่ให้ข้อมูลที่กำลังพิมพ์หาย */
@@ -1019,26 +1046,44 @@ export default function App() {
   };
 
   const PinModal = () => {
-    const [pin, setPin] = useState("");
-    const [err, setErr] = useState(false);
-    const go = () => {
-      if (pin === data.meta.pin) { setAdmin(true); setModal(null); say("เข้าสู่โหมดผู้ดูแลแล้ว"); }
-      else { setErr(true); setPin(""); }
+    const [email, setEmail] = useState("");
+    const [sent, setSent] = useState(false);
+    const [err, setErr] = useState("");
+    const go = async () => {
+      const e = email.trim();
+      if (!e || !e.includes("@")) { setErr("กรุณากรอกอีเมลให้ถูกต้อง"); return; }
+      setErr("");
+      try {
+        const { error } = await window.activityAuth.signIn(e);
+        if (error) throw error;
+        setSent(true);
+      } catch (ex) {
+        setErr(ex?.message || "ส่งลิงก์เข้าสู่ระบบไม่สำเร็จ");
+      }
     };
     return (
       <div className="ovl" onClick={() => setModal(null)}>
-        <div className="modal" style={{ maxWidth: 380 }} onClick={(e) => e.stopPropagation()}>
-          <div className="mhead"><Care size={54} mood="alert" />
-            <div><h3>เข้าสู่โหมดผู้ดูแล</h3><p>ใส่รหัสผู้ดูแลเพื่อแก้ไขข้อมูล</p></div>
+        <div className="modal" style={{ maxWidth: 420 }} onClick={(e) => e.stopPropagation()}>
+          <div className="mhead"><Care size={54} mood={sent ? "happy" : "alert"} />
+            <div><h3>เข้าสู่ระบบผู้ดูแล</h3><p>ใช้ลิงก์ยืนยันที่ส่งไปยังอีเมลผู้ดูแล</p></div>
             <button className="x" onClick={() => setModal(null)}>✕</button></div>
-          <input className="inp" type="password" inputMode="numeric" value={pin} autoFocus
-            onChange={(e) => { setPin(e.target.value); setErr(false); }}
-            onKeyDown={(e) => e.key === "Enter" && go()} placeholder="รหัสผู้ดูแล" />
-          {err && <div style={{ color: "var(--red)", fontSize: 13, marginTop: 8 }}>รหัสไม่ถูกต้อง ลองใหม่อีกครั้ง</div>}
-          <button className="btn btn-p" style={{ marginTop: 16, width: "100%" }} onClick={go}>เข้าสู่ระบบ</button>
-          <p style={{ fontSize: 12.5, color: "var(--gray)", marginTop: 12, textAlign: "center" }}>
-            รหัสเริ่มต้นคือ 1234 · เปลี่ยนได้ในเมนูตั้งค่าระบบ
-          </p>
+          {sent ? (
+            <div style={{ background: "var(--cream)", borderRadius: 16, padding: 18, textAlign: "center" }}>
+              <CheckMark size={48} />
+              <div style={{ marginTop: 8, fontWeight: 600 }}>ส่งลิงก์เข้าสู่ระบบแล้ว</div>
+              <div style={{ marginTop: 4, fontSize: 13.5, color: "var(--gray)" }}>เปิดอีเมลบนอุปกรณ์นี้ แล้วแตะลิงก์เพื่อกลับเข้าสู่ Activity 360</div>
+            </div>
+          ) : (<>
+            <div className="field"><label>อีเมลผู้ดูแล</label>
+              <input className="inp" type="email" value={email} autoFocus
+                onChange={(e) => { setEmail(e.target.value); setErr(""); }}
+                onKeyDown={(e) => e.key === "Enter" && go()} placeholder="name@example.com" /></div>
+            {err && <div style={{ color: "var(--red)", fontSize: 13, marginTop: -6, marginBottom: 10 }}>{err}</div>}
+            <button className="btn btn-p" style={{ width: "100%" }} onClick={go}>ส่งลิงก์เข้าสู่ระบบ</button>
+            <p style={{ fontSize: 12.5, color: "var(--gray)", marginTop: 12, textAlign: "center" }}>
+              ยกเลิกการใช้ PIN 1234 แล้ว เพื่อไม่ให้รหัสผู้ดูแลอยู่ในโค้ดหน้าเว็บ
+            </p>
+          </>)}
         </div>
       </div>
     );
@@ -1066,12 +1111,8 @@ export default function App() {
             <button className="x" onClick={() => setModal(null)}>✕</button></div>
           <div className="field"><label>ชื่อโรงเรียน</label>
             <input className="inp" value={m.school} onChange={(e) => setM({ ...m, school: e.target.value })} /></div>
-          <div className="row2">
-            <div className="field"><label>ปีการศึกษา</label>
-              <input className="inp" value={m.year} onChange={(e) => setM({ ...m, year: e.target.value })} /></div>
-            <div className="field"><label>รหัสผู้ดูแล</label>
-              <input className="inp" value={m.pin} onChange={(e) => setM({ ...m, pin: e.target.value })} /></div>
-          </div>
+          <div className="field"><label>ปีการศึกษา</label>
+            <input className="inp" value={m.year} onChange={(e) => setM({ ...m, year: e.target.value })} /></div>
           <button className="btn btn-p" style={{ width: "100%" }}
             onClick={() => { save({ ...data, meta: m }, "บันทึกการตั้งค่าแล้ว"); setModal(null); }}>บันทึกการตั้งค่า</button>
 
@@ -1147,6 +1188,16 @@ export default function App() {
     </div>
   );
 
+  const leaveAdmin = async () => {
+    try { await window.activityAuth?.signOut?.(); } catch (e) {}
+    setAdmin(false);
+    try {
+      const r = await window.storage.get(KEY, true);
+      if (r?.value) setData(JSON.parse(r.value));
+    } catch (e) {}
+    say("ออกจากระบบผู้ดูแลแล้ว");
+  };
+
   return (
     <div className="tp">
       <style dangerouslySetInnerHTML={{ __html: CSS }} />
@@ -1171,10 +1222,10 @@ export default function App() {
             <button className="navitem" onClick={() => setModal({ type: "quick" })}><span className="ic">📝</span>สรุปหลังกิจกรรม</button>
             <button className="navitem" onClick={() => setModal({ type: "bulk" })}><span className="ic">📥</span>เพิ่มหลายงานพร้อมกัน</button>
             <button className="navitem" onClick={() => setModal({ type: "settings" })}><span className="ic">⚙</span>ตั้งค่าระบบ</button>
-            <button className="navitem" onClick={() => { setAdmin(false); say("ออกจากโหมดผู้ดูแลแล้ว"); }}><span className="ic">🚪</span>ออกจากโหมดผู้ดูแล</button>
+            <button className="navitem" onClick={leaveAdmin}><span className="ic">🚪</span>ออกจากระบบผู้ดูแล</button>
           </>
         ) : (
-          <button className="navitem" onClick={() => setModal({ type: "pin" })}><span className="ic">🔒</span>เข้าสู่โหมดผู้ดูแล</button>
+          <button className="navitem" onClick={() => setModal({ type: "pin" })}><span className="ic">🔒</span>เข้าสู่ระบบผู้ดูแล</button>
         )}
         <div style={{ marginTop: 20, padding: "14px 12px", background: "var(--cream)", borderRadius: 16, fontSize: 12.5, color: "var(--gray)" }}>
           {data.meta.school}<br />{data.meta.year}
@@ -1211,7 +1262,7 @@ export default function App() {
         <button className="bplus" onClick={() => admin ? setModal({ type: "quick" }) : setModal({ type: "pin" })}>+</button>
         <button className={"bitem" + (page === "report" ? " on" : "")} onClick={() => setPage("report")}>
           <span style={{ fontSize: 19 }}>📊</span>รายงาน</button>
-        <button className="bitem" onClick={() => admin ? setAdmin(false) : setModal({ type: "pin" })}>
+        <button className="bitem" onClick={() => admin ? leaveAdmin() : setModal({ type: "pin" })}>
           <span style={{ fontSize: 19 }}>{admin ? "🚪" : "🔒"}</span>{admin ? "ออก" : "ผู้ดูแล"}</button>
       </nav>
 

@@ -1,7 +1,7 @@
 {
   "name": "tupkln-activity-360",
   "private": true,
-  "version": "0.1.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "@supabase/supabase-js": "^2.57.4"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.0",
