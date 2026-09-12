@@ -118,7 +118,7 @@ const CSS = `
 .attno{font-size:12px;font-weight:600;color:var(--pink);background:var(--softpink);
   border-radius:9px;padding:2px 9px;display:inline-block;}
 .att h3{font-size:16px;margin:9px 0 8px;line-height:1.45;}
-.attmeta{font-size:13.5px;color:var(--gray);display:flex;gap:7px;align-items:flex-start;margin-bottom:4px;}
+.attmeta{overflow-wrap:anywhere;font-size:13.5px;color:var(--gray);display:flex;gap:7px;align-items:flex-start;margin-bottom:4px;}
 .attmeta b{color:#4A5069;font-weight:600;}
 .attfoot{display:flex;gap:9px;margin-top:14px;flex-wrap:wrap;}
 
@@ -329,6 +329,81 @@ textarea.inp{min-height:70px;resize:vertical;}
   border:3px solid #fff;box-shadow:0 0 0 2px rgba(22,32,92,.08);}
 .tlitem .tt{font-weight:600;font-size:14px;line-height:1.4;}
 
+/* ---------- หน้าจอเปิดระบบ ---------- */
+.splash{min-height:100vh;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+  background:linear-gradient(140deg,#1A2569,#2C3B8C 55%,#5C3A8E);color:#fff;text-align:center;padding:24px;}
+.splash h2{font-size:19px;font-weight:700;}
+.splash p{margin:0;color:#D7DDFF;font-size:14px;}
+.dots span{display:inline-block;width:9px;height:9px;border-radius:50%;background:#FF5E9D;margin:0 3px;
+  animation:blink 1.1s infinite;}
+.dots span:nth-child(2){animation-delay:.18s;} .dots span:nth-child(3){animation-delay:.36s;}
+@keyframes blink{0%,80%,100%{opacity:.25;transform:translateY(0);}40%{opacity:1;transform:translateY(-5px);}}
+
+/* ---------- โปสเตอร์ประชาสัมพันธ์ ---------- */
+.posterbox{width:360px;max-width:100%;border-radius:26px;overflow:hidden;background:#fff;
+  box-shadow:0 24px 60px rgba(16,24,64,.30);animation:pop .3s cubic-bezier(.22,1.2,.36,1);}
+.ptop{position:relative;padding:22px 22px 26px;color:#fff;overflow:hidden;}
+.ptop .pc{position:absolute;border-radius:50%;background:rgba(255,255,255,.15);}
+.ptop .pcat{font-size:12.5px;font-weight:600;background:rgba(255,255,255,.2);border-radius:20px;
+  padding:4px 12px;display:inline-block;position:relative;z-index:2;}
+.ptop h3{font-size:21px;line-height:1.4;margin:12px 0 0;position:relative;z-index:2;text-shadow:0 1px 8px rgba(16,24,64,.25);}
+.pdate{display:flex;align-items:center;gap:14px;padding:16px 22px;background:var(--cream);}
+.pdate .pd{width:64px;height:64px;border-radius:20px;background:#fff;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 14px rgba(22,32,92,.12);}
+.pdate .pd b{font-size:26px;line-height:1;color:var(--pink);}
+.pdate .pd span{font-size:11.5px;color:var(--gray);}
+.pbody{padding:16px 22px 8px;display:flex;flex-direction:column;gap:8px;font-size:14px;color:#4A5069;}
+.pfoot{padding:14px 22px 18px;border-top:1px solid var(--line);display:flex;align-items:center;gap:10px;}
+.pfoot div{font-size:12px;color:var(--gray);line-height:1.4;}
+@media print{
+  .tp.posteropen .sidebar,.tp.posteropen .main,.tp.posteropen .bnav,.tp.posteropen .noposter{display:none !important;}
+  .tp.posteropen .ovl{position:static;background:none;backdrop-filter:none;padding:0;display:block;}
+  .tp.posteropen .posterbox{box-shadow:none;width:100%;}
+}
+
+/* ---------- ขยายองค์ประกอบภาพให้เด่นขึ้น ---------- */
+.hero{padding:30px 34px;}
+.hero h1{font-size:26px;}
+.hero .hmascot{transition:transform .3s cubic-bezier(.22,1.2,.36,1);}
+.hero .hmascot:hover{transform:scale(1.06);}
+.stat .sic{width:44px;height:44px;border-radius:15px;font-size:21px;}
+.stat .snum{font-size:33px;}
+.cday{min-height:120px;}
+.pill{font-size:11.5px;}
+.brandmark{width:48px;height:48px;border-radius:16px;}
+.countbox{width:108px;height:108px;border-radius:30px;}
+.countbox b{font-size:36px;}
+.posterbox{width:390px;}
+.ptop{padding:26px 24px 30px;}
+.ptop h3{font-size:22px;}
+.empty{padding:40px 20px;}
+/* ---------- เช็กลิสต์เตรียมงาน ---------- */
+.tkrow{display:flex;align-items:flex-start;gap:11px;background:var(--cream);border-radius:15px;padding:11px 14px;}
+.tkrow.done{opacity:.6;}
+.tkrow.done .tkt{text-decoration:line-through;}
+.tkbox{width:22px;height:22px;border-radius:8px;border:2px solid var(--line);background:#fff;flex-shrink:0;
+  display:grid;place-items:center;font-size:13px;color:#fff;transition:all .18s ease;margin-top:1px;}
+.tkbox.on{background:var(--green);border-color:var(--green);}
+.tkt{font-weight:600;font-size:14px;line-height:1.4;}
+.tkmini{height:6px;border-radius:20px;background:#F0EAE6;overflow:hidden;width:110px;display:inline-block;
+  vertical-align:middle;margin-left:8px;}
+.tkmini span{display:block;height:100%;background:linear-gradient(90deg,#57C9A0,var(--green));
+  transition:width .8s cubic-bezier(.22,1,.36,1);}
+.duebad{font-size:11.5px;font-weight:700;border-radius:20px;padding:2px 9px;white-space:nowrap;}
+.due-late{background:#FBE6E6;color:var(--red);}
+.due-soon{background:#FDEEE2;color:#C4661F;}
+.due-ok{background:var(--lightblue);color:#2C56B8;}
+
+@media (max-width:900px){
+  .hero{padding:22px;}
+  .hero h1{font-size:22px;}
+  .hero .hmascot svg{width:112px !important;height:112px !important;}
+  .cday{min-height:60px;}
+  .stat .snum{font-size:29px;}
+  .countbox{width:88px;height:88px;border-radius:24px;}
+  .countbox b{font-size:29px;}
+}
+
 @media (max-width:900px){
   .tp{flex-direction:column;}
   .sidebar{display:none;}
@@ -409,6 +484,18 @@ const CATS = [
 ];
 const isAdminUnit = (u) => /บริหาร/.test(u.type || "") || /^(กลุ่มบริหาร|หัวหน้าระดับ)/.test(u.name || "");
 const unitsOfType = (units, t) => units.filter((u) => t === "กลุ่มบริหาร" ? isAdminUnit(u) : !isAdminUnit(u));
+/* ชุดงานเตรียมมาตรฐานของโรงเรียน ตัวเลขคือจำนวนวันก่อนวันจัดกิจกรรม */
+const TASK_TEMPLATE = [
+  { title: "เสนอขออนุมัติโครงการ/กิจกรรม", before: 21 },
+  { title: "จัดทำคำสั่งแต่งตั้งคณะกรรมการ", before: 14 },
+  { title: "จองสถานที่และประสานฝ่ายอาคารสถานที่", before: 10 },
+  { title: "จัดทำป้ายไวนิลและสื่อประชาสัมพันธ์", before: 7 },
+  { title: "ประสานวิทยากร/แขกผู้มีเกียรติ", before: 7 },
+  { title: "แจ้งกำหนดการให้คณะครูและนักเรียน", before: 3 },
+  { title: "เตรียมเอกสารลงทะเบียนและอุปกรณ์", before: 1 },
+  { title: "บันทึกภาพกิจกรรม", before: 0 },
+  { title: "สรุปผลและรายงานผู้บริหาร", before: -7 },
+];
 const catOf = (id) => CATS.find((c) => c.id === id);
 const MONTH_TONE = [
   ["#4C63C9","#7B54D3"], ["#E0558B","#F2856B"], ["#EF8033","#E8B14A"], ["#E14848","#EF8033"],
@@ -474,6 +561,20 @@ const spanDays = (a) => {
 };
 const lastDay = (a) => a.dateEnd && a.dateEnd > a.date ? a.dateEnd : a.date;
 
+const taskStat = (a) => {
+  const t = a.tasks || [];
+  return { total: t.length, done: t.filter((x) => x.done).length,
+    late: a.closed ? 0 : t.filter((x) => !x.done && x.due && x.due < TODAY).length };
+};
+const dueBadge = (due) => {
+  if (!due) return null;
+  const days = Math.round((new Date(due + "T00:00:00") - new Date(TODAY + "T00:00:00")) / 864e5);
+  if (days < 0) return { cls: "due-late", text: `เลยกำหนด ${-days} วัน` };
+  if (days === 0) return { cls: "due-late", text: "ครบกำหนดวันนี้" };
+  if (days <= 7) return { cls: "due-soon", text: `อีก ${days} วัน` };
+  return { cls: "due-ok", text: thDate(due) };
+};
+
 const statusOf = (a) => {
   if (!a.name) return "none";
   if (a.closed) return "done";
@@ -512,9 +613,17 @@ const lineText = (a, unitLabel) => [
   a.dress ? `การแต่งกาย ${a.dress}` : "",
   a.target ? `ผู้เข้าร่วม ${a.target}` : "",
   unitLabel ? `รับผิดชอบโดย ${unitLabel}` : "",
-  a.docUrl ? `เอกสาร ${a.docUrl}` : "",
+  a.docUrl ? `เอกสาร ${safeUrl(a.docUrl)}` : "",
 ].filter(Boolean).join("\n");
 
+/* รับเฉพาะลิงก์ http/https กัน javascript: และเติม https:// ให้ลิงก์ที่พิมพ์มาไม่ครบ */
+const safeUrl = (u) => {
+  const v = String(u || "").trim();
+  if (!v) return "";
+  if (/^https?:\/\//i.test(v)) return v;
+  if (/^(javascript|data|vbscript):/i.test(v)) return "";
+  return "https://" + v.replace(/^\/+/, "");
+};
 const download = (name, text, mime) => {
   const blob = new Blob([text], { type: mime });
   const url = URL.createObjectURL(blob);
@@ -613,11 +722,20 @@ export default function App() {
   const [modal, setModal] = useState(null);
   const [filter, setFilter] = useState("all");
   const [sortBy, setSortBy] = useState("date");
+  const [q, setQ] = useState("");
+  const [catFilter, setCatFilter] = useState("");
   const [myUnit, setMyUnit] = useState("");
   const [cursor, setCursor] = useState(() => { const d = new Date(); return { y: d.getFullYear(), m: d.getMonth() }; });
   const [sel, setSel] = useState(TODAY);
   const [syncAt, setSyncAt] = useState(null);
   const [party, setParty] = useState(false);
+  const [offline, setOffline] = useState(typeof navigator !== "undefined" && navigator.onLine === false);
+  useEffect(() => {
+    const on = () => setOffline(false), off = () => setOffline(true);
+    window.addEventListener("online", on);
+    window.addEventListener("offline", off);
+    return () => { window.removeEventListener("online", on); window.removeEventListener("offline", off); };
+  }, []);
   const [saying, setSaying] = useState(null);
   const [bouncing, setBouncing] = useState(false);
   const pokeCare = () => {
@@ -627,6 +745,7 @@ export default function App() {
     setTimeout(() => setSaying(null), 3200);
   };
   const dataRef = useRef(null);
+  const baseRef = useRef(null);
   const modalRef = useRef(null);
   useEffect(() => { dataRef.current = data; }, [data]);
   useEffect(() => { modalRef.current = modal; }, [modal]);
@@ -667,6 +786,7 @@ export default function App() {
       try {
         const r = await window.storage.get(KEY, true);
         if (!r || !r.value || stopped) return;
+        baseRef.current = r.value;
         if (JSON.stringify(dataRef.current) !== r.value) setData(JSON.parse(r.value));
         setSyncAt(new Date());
       } catch (e) {}
@@ -692,20 +812,51 @@ export default function App() {
           ...d,
           meta: { ...SEED.meta, ...d.meta, year: d.meta && d.meta.year === "ปีการศึกษา 2568" ? SEED.meta.year : (d.meta || {}).year || SEED.meta.year },
           activities: d.activities.map((a) => ({ target: "", contact: "", docUrl: "", result: "", dateEnd: "",
-            cat: "", albumUrl: "", joinCount: "", ...a,
+            cat: "", albumUrl: "", joinCount: "", tasks: [], ...a,
             unitId: REMAP[a.unitId] !== undefined ? REMAP[a.unitId] : a.unitId })),
         };
       }
-      setData(d); setSyncAt(new Date());
+      setData(d); baseRef.current = JSON.stringify(d); setSyncAt(new Date());
       try { const m = await window.storage.get(MYUNIT, false); if (m && m.value) setMyUnit(m.value); } catch (e) {}
       setLoading(false);
     })();
   }, []);
 
   const say = (msg, icon = "✓") => { setToast({ msg, icon }); setTimeout(() => setToast(null), 2400); };
+  /* ถ้ามีผู้ดูแลอีกคนแก้ไขระหว่างที่เรากำลังทำงานอยู่ ให้รวมข้อมูลทีละกิจกรรม
+     แทนการเขียนทับทั้งก้อน โดยยึดรายการที่แก้ล่าสุดเป็นหลัก */
+  const mergeRemote = (mine, remote, base) => {
+    const idx = (arr) => Object.fromEntries((arr || []).map((a) => [a.id, a]));
+    const M = idx(mine.activities), R = idx(remote.activities), B = idx((base || {}).activities);
+    const out = [];
+    new Set([...Object.keys(M), ...Object.keys(R)]).forEach((id) => {
+      const m = M[id], r = R[id];
+      if (m && r) out.push((r.updatedAt || "") > (m.updatedAt || "") ? r : m);
+      else if (m) out.push(m);
+      else if (!B[id]) out.push(r);        // คนอื่นเพิ่งเพิ่มเข้ามา เก็บไว้
+    });                                     // ถ้าอยู่ใน base แต่หายจากของเรา แปลว่าเราลบเอง
+    return { ...mine, activities: out.sort((a, b) => a.no - b.no) };
+  };
+
   const save = async (next, msg) => {
     setData(next);
-    try { await window.storage.set(KEY, JSON.stringify(next), true); setSyncAt(new Date()); if (msg) say(msg); celebrate(next); }
+    try {
+      let payload = next;
+      try {
+        const cur0 = await window.storage.get(KEY, true);
+        if (cur0 && cur0.value && baseRef.current && cur0.value !== baseRef.current) {
+          payload = mergeRemote(next, JSON.parse(cur0.value), JSON.parse(baseRef.current));
+          setData(payload);
+          say("มีผู้ดูแลอีกคนแก้ไขพร้อมกัน ระบบรวมข้อมูลให้แล้ว", "⚠");
+        }
+      } catch (e) { /* อ่านไม่ได้ก็บันทึกตามปกติ */ }
+      const body = JSON.stringify(payload);
+      await window.storage.set(KEY, body, true);
+      baseRef.current = body;
+      setSyncAt(new Date());
+      if (msg) say(msg);
+      celebrate(payload);
+    }
     catch (e) {
       const m = (e && e.message) ? String(e.message) : "";
       say(m ? "บันทึกไม่สำเร็จ: " + m.slice(0, 90) : "บันทึกไม่สำเร็จ ลองอีกครั้ง", "!");
@@ -724,7 +875,7 @@ export default function App() {
     save({ ...data, activities: data.activities.map((a) => a.id === id ? { ...a, ...patch, updatedAt: new Date().toISOString() } : a) }, msg);
   const pickUnit = async (id) => { setMyUnit(id); try { await window.storage.set(MYUNIT, id, false); } catch (e) {} };
   const refresh = async () => {
-    try { const r = await window.storage.get(KEY, true); if (r && r.value) { setData(JSON.parse(r.value)); setSyncAt(new Date()); say("อัปเดตข้อมูลล่าสุดแล้ว"); } }
+    try { const r = await window.storage.get(KEY, true); if (r && r.value) { baseRef.current = r.value; setData(JSON.parse(r.value)); setSyncAt(new Date()); say("อัปเดตข้อมูลล่าสุดแล้ว"); } }
     catch (e) { say("ดึงข้อมูลไม่สำเร็จ", "!"); }
   };
 
@@ -736,6 +887,7 @@ export default function App() {
       done: A.filter((a) => statusOf(a) === "done").length,
       todo: A.filter((a) => statusOf(a) === "todo").length,
       nodate: A.filter((a) => a.name && !a.date).length,
+      taskLate: A.reduce((n, a) => n + taskStat(a).late, 0),
       absent: A.reduce((s, a) => s + a.absentees.length, 0),
       pct: A.length ? Math.round((A.filter((a) => statusOf(a) === "done").length / A.length) * 100) : 0,
     };
@@ -744,9 +896,11 @@ export default function App() {
   if (loading || !data) {
     return (
       <div className="tp"><style dangerouslySetInnerHTML={{ __html: CSS }} />
-        <div className="main">
-          <div className="skel" style={{ height: 140, marginBottom: 16 }} />
-          <div className="skel" style={{ height: 420 }} />
+        <div className="splash">
+          <div className="float"><Care size={168} mood="hello" /></div>
+          <h2>TUPKLN ACTIVITY 360</h2>
+          <p>กำลังเตรียมปฏิทินกิจกรรมของโรงเรียน</p>
+          <div className="dots"><span /><span /><span /></div>
         </div>
       </div>
     );
@@ -766,6 +920,7 @@ export default function App() {
   const NAV = [
     { id: "cal", ic: "📅", label: "ปฏิทินกิจกรรม" },
     { id: "acts", ic: "📋", label: "กิจกรรมทั้งหมด", badge: admin ? stats.todo || null : null },
+    { id: "tasks", ic: "✅", label: "ติดตามงานเตรียม", badge: stats.taskLate || null },
     { id: "report", ic: "📊", label: "รายงาน / พิมพ์" },
   ];
 
@@ -792,17 +947,26 @@ export default function App() {
         {a.place && <div className="attmeta"><span>📍</span><span>{a.place}</span></div>}
         {a.target && <div className="attmeta"><span>👥</span><span><b>ผู้เข้าร่วม</b> {a.target}</span></div>}
         {a.dress && <div className="attmeta"><span>👔</span><span>{a.dress}</span></div>}
+        {taskStat(a).total > 0 && (
+          <div className="attmeta"><span>✅</span><span>
+            เตรียมงาน {taskStat(a).done}/{taskStat(a).total}
+            <span className="tkmini"><span style={{ width: (taskStat(a).done / taskStat(a).total) * 100 + "%" }} /></span>
+            {taskStat(a).late > 0 && <span className="duebad due-late" style={{ marginLeft: 8 }}>เลยกำหนด {taskStat(a).late}</span>}
+          </span></div>
+        )}
         <div className="attfoot">
           <button className="btn btn-g btn-sm" onClick={() => setModal({ type: "view", id: a.id })}>ดูรายละเอียด</button>
           {a.date && <a className="btn btn-g btn-sm" href={gcalUrl(a, unitName(a.unitId))}
             target="_blank" rel="noreferrer">+ Google ปฏิทิน</a>}
-          {a.docUrl && <a className="btn btn-g btn-sm" href={a.docUrl} target="_blank" rel="noreferrer">📎 เปิดเอกสาร</a>}
+          {a.docUrl && <a className="btn btn-g btn-sm" href={safeUrl(a.docUrl)} target="_blank" rel="noreferrer">📎 เปิดเอกสาร</a>}
+          {a.date && <button className="btn btn-g btn-sm" onClick={() => setModal({ type: "poster", id: a.id })}>🖼 โปสเตอร์</button>}
           <button className="btn btn-g btn-sm" onClick={() => {
             const t = lineText(a, unitName(a.unitId));
             if (navigator.clipboard) navigator.clipboard.writeText(t).then(() => say("คัดลอกข้อความแล้ว วางในไลน์ได้เลย"), () => say("คัดลอกไม่สำเร็จ", "!"));
             else say("อุปกรณ์นี้คัดลอกอัตโนมัติไม่ได้", "!");
           }}>📋 คัดลอกข้อความ</button>
           {admin && <button className="btn btn-p btn-sm" onClick={() => setModal({ type: "absent", id: a.id })}>บันทึกผู้ไม่เข้าร่วม</button>}
+          {admin && <button className="btn btn-g btn-sm" onClick={() => setModal({ type: "tasks", id: a.id })}>✅ เช็กลิสต์</button>}
           {admin && <button className="btn btn-g btn-sm" onClick={() => setModal({ type: "edit", id: a.id })}>แก้ไข</button>}
         </div>
       </div>
@@ -854,13 +1018,13 @@ export default function App() {
           <div className={"hmascot float" + (bouncing ? " bounce" : "")} onClick={pokeCare}
             title="แตะน้อง CARE ดูสิครับ">
             {saying && <div className="bubble-say">{saying}</div>}
-            <Care size={112} mood={saying ? "happy" : tomorrowList.length ? "alert" : "hello"} />
+            <Care size={158} mood={saying ? "happy" : tomorrowList.length ? "alert" : "hello"} />
           </div>
         </div>
 
         {acts.length === 0 && (
           <div className="card empty" style={{ marginTop: 18 }}>
-            <Care size={92} mood="hello" />
+            <Care size={122} mood="hello" />
             <h3 style={{ marginTop: 8 }}>ยังไม่มีกิจกรรมในระบบ</h3>
             <p>{admin ? "กดปุ่มด้านล่างเพื่อเพิ่มกิจกรรมแรก ใส่วันที่แล้วจะขึ้นบนปฏิทินทันที"
               : "ผู้ดูแลกำลังจัดทำข้อมูล เปิดดูใหม่อีกครั้งได้เลยครับ"}</p>
@@ -886,6 +1050,8 @@ export default function App() {
                   {a.place && <span>📍 {a.place}</span>}
                   {a.dress && <span>👔 {a.dress}</span>}
                   <span>👥 {unitName(a.unitId) || "ยังไม่มอบหมาย"}</span>
+                  {taskStat(a).total > 0 && <span>✅ เตรียมงาน {taskStat(a).done}/{taskStat(a).total}
+                    {taskStat(a).late > 0 ? ` (เลยกำหนด ${taskStat(a).late})` : ""}</span>}
                 </div>
                 <div style={{ display: "flex", gap: 9, marginTop: 13, flexWrap: "wrap" }}>
                   <button className="btn btn-p btn-sm" onClick={() => setModal({ type: "view", id: a.id })}>ดูรายละเอียด</button>
@@ -940,17 +1106,27 @@ export default function App() {
             <span className="mb-emoji">{MONTH_EMOJI[cursor.m]}</span>
           </div>
           <div className="calbar">
-            <button className="arrow" onClick={() => move(-1)}>‹</button>
+            <button className="arrow" aria-label="เดือนก่อนหน้า" onClick={() => move(-1)}>‹</button>
             <div className="calmonth">{TH_M[cursor.m]} {cursor.y + 543}
               <span className="monthemoji">{MONTH_EMOJI[cursor.m]}</span></div>
-            <button className="arrow" onClick={() => move(1)}>›</button>
+            <button className="arrow" aria-label="เดือนถัดไป" onClick={() => move(1)}>›</button>
             <div style={{ marginLeft: "auto", display: "flex", gap: 8 }}>
               <button className="btn btn-g btn-sm"
                 onClick={() => { const d = new Date(); setCursor({ y: d.getFullYear(), m: d.getMonth() }); setSel(TODAY); }}>วันนี้</button>
               <button className="btn btn-g btn-sm" onClick={() => window.print()}>🖨 พิมพ์ปฏิทิน</button>
+              {monthList.length > 0 && <button className="btn btn-g btn-sm" onClick={() => {
+                const t = [`📅 ปฏิทินกิจกรรมเดือน${TH_M[cursor.m]} ${cursor.y + 543}`, data.meta.school, ""]
+                  .concat([...monthList].sort((a, b) => a.date.localeCompare(b.date))
+                    .map((a) => `• ${spanText(a)} ${a.name || "ยังไม่ตั้งชื่อ"}${a.time ? " (" + a.time + " น.)" : ""}${a.place ? " @" + a.place : ""}`))
+                  .join("\n");
+                if (navigator.clipboard) navigator.clipboard.writeText(t).then(() => say("คัดลอกสรุปทั้งเดือนแล้ว"), () => say("คัดลอกไม่สำเร็จ", "!"));
+              }}>📋 สรุปทั้งเดือน</button>}
               {monthList.length > 0 && <button className="btn btn-g btn-sm"
                 onClick={() => { download(`ปฏิทิน-${TH_M[cursor.m]}.ics`, icsOf(monthList, unitName), "text/calendar;charset=utf-8"); say("บันทึกปฏิทินทั้งเดือนแล้ว"); }}>
-                ⬇ ไฟล์ .ics ทั้งเดือน</button>}
+                ⬇ .ics เดือนนี้</button>}
+              {dated.length > 0 && <button className="btn btn-g btn-sm"
+                onClick={() => { download(`ปฏิทิน-${data.meta.year}.ics`, icsOf(dated, unitName), "text/calendar;charset=utf-8"); say("บันทึกปฏิทินทั้งปีแล้ว"); }}>
+                ⬇ .ics ทั้งปี</button>}
             </div>
           </div>
           <div className="caldow">{DOW.map((d, i) => <span key={d} className={i === 0 || i === 6 ? "we" : ""}>{d}</span>)}</div>
@@ -998,7 +1174,7 @@ export default function App() {
             onClick={() => setModal({ type: "edit", id: null, date: sel })}>+ เพิ่มกิจกรรมวันนี้</button>}
         </div>
         {selList.length === 0 ? (
-          <div className="card empty"><Care size={82} mood="happy" />
+          <div className="card empty"><Care size={112} mood="happy" />
             <h3 style={{ marginTop: 8 }}>วันนี้ไม่มีกิจกรรม</h3>
             <p>แตะวันอื่นในปฏิทินเพื่อดูกิจกรรม หรือดูรายการที่กำลังจะถึงด้านล่าง</p></div>
         ) : <div className="attgrid">{selList.map((a) => <ActCard key={a.id} a={a} />)}</div>}
@@ -1055,6 +1231,13 @@ export default function App() {
     const list = acts.filter((a) => filter === "all" ? true
       : filter === "mine" ? (myUnit && a.unitId === myUnit)
       : statusOf(a) === filter)
+      .filter((a) => !catFilter || a.cat === catFilter)
+      .filter((a) => {
+        const k = q.trim().toLowerCase();
+        if (!k) return true;
+        return `${a.no} ${a.name} ${a.place} ${a.target} ${unitName(a.unitId)} ${(catOf(a.cat) || {}).label || ""}`
+          .toLowerCase().includes(k);
+      })
       .sort((a, b) => sortBy === "no" ? a.no - b.no
         : (a.date || "9999").localeCompare(b.date || "9999") || a.no - b.no);
     return (
@@ -1063,6 +1246,11 @@ export default function App() {
           <h2>กิจกรรมทั้งหมด</h2><span className="cnt">{list.length} จาก {acts.length} งาน</span>
           {admin && <button className="btn btn-n btn-sm" style={{ marginLeft: "auto" }}
             onClick={() => setModal({ type: "edit", id: null })}>+ เพิ่มกิจกรรม</button>}
+        </div>
+        <div className="search" style={{ maxWidth: 420, marginBottom: 14 }}>
+          <span style={{ color: "var(--gray)" }}>🔍</span>
+          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="ค้นหาชื่อกิจกรรม สถานที่ หรือกลุ่ม" />
+          {q && <button className="btn btn-g btn-sm" onClick={() => setQ("")}>ล้าง</button>}
         </div>
         <div className="chips">
           <button className={"chip" + (filter === "all" ? " on" : "")} onClick={() => setFilter("all")}>ทั้งหมด</button>
@@ -1075,12 +1263,21 @@ export default function App() {
               สรุปแล้ว ({stats.done})</button>
           </>}
           <button className="chip" style={{ marginLeft: "auto" }}
-            onClick={() => setSortBy(sortBy === "no" ? "date" : "no")}>
+            onClick={() => setSortBy(sortBy === "no" ? "date" : "no")}
+            data-sort>
             ⇅ {sortBy === "no" ? "เรียงตามเลขงาน" : "เรียงตามวันที่"}
           </button>
         </div>
+        <div className="chips" style={{ marginTop: -6 }}>
+          {CATS.filter((c) => acts.some((a) => a.cat === c.id)).map((c) => (
+            <button key={c.id} className={"chip" + (catFilter === c.id ? " on" : "")}
+              onClick={() => setCatFilter(catFilter === c.id ? "" : c.id)}>
+              {c.icon} {c.label.split(" ")[0]} ({acts.filter((a) => a.cat === c.id).length})
+            </button>
+          ))}
+        </div>
         {list.length === 0 ? (
-          <div className="card empty"><Care size={84} mood="search" />
+          <div className="card empty"><Care size={112} mood="search" />
             <h3 style={{ marginTop: 8 }}>{acts.length === 0 ? "ยังไม่มีกิจกรรมในระบบ" : "ไม่มีกิจกรรมในกลุ่มนี้"}</h3>
             <p>{acts.length === 0 ? "เริ่มจากการเพิ่มกิจกรรมแรกของปีการศึกษา" : "ลองเลือกตัวกรองอื่น"}</p>
             {admin && acts.length === 0 && <button className="btn btn-p" style={{ marginTop: 14 }}
@@ -1091,13 +1288,78 @@ export default function App() {
   };
 
   /* ---------- report ---------- */
+  const Tasks = () => {
+    const rows = [];
+    acts.forEach((a) => (a.tasks || []).forEach((t) => rows.push({ ...t, act: a })));
+    const mine = myUnit ? rows.filter((r) => r.act.unitId === myUnit) : rows;
+    const open = mine.filter((r) => !r.done);
+    const in7 = ymd(new Date(Date.now() + 7 * 864e5));
+    const late = open.filter((r) => r.due && r.due < TODAY).sort((x, y) => x.due.localeCompare(y.due));
+    const soon = open.filter((r) => r.due && r.due >= TODAY && r.due <= in7).sort((x, y) => x.due.localeCompare(y.due));
+    const later = open.filter((r) => !r.due || r.due > in7).sort((x, y) => (x.due || "9999").localeCompare(y.due || "9999"));
+    const fin = mine.filter((r) => r.done);
+
+    const Row = ({ r }) => {
+      const b = dueBadge(r.due);
+      return (
+        <div className={"tkrow" + (r.done ? " done" : "")} style={{ marginBottom: 9 }}>
+          <button className={"tkbox" + (r.done ? " on" : "")} disabled={!admin}
+            aria-label={r.done ? "ยกเลิกเครื่องหมายเสร็จ" : "ทำเครื่องหมายว่าเสร็จ"}
+            onClick={() => patchAct(r.act.id, {
+              tasks: (r.act.tasks || []).map((x) => x.id === r.id ? { ...x, done: !x.done } : x),
+            }, r.done ? "ยกเลิกเครื่องหมายแล้ว" : "ทำเครื่องหมายเสร็จแล้ว")}>{r.done ? "✓" : ""}</button>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div className="tkt">{r.title}</div>
+            <div className="usub">งานที่ {r.act.no} {r.act.name || "ยังไม่ตั้งชื่อ"}
+              {r.owner ? " · ผู้รับผิดชอบ " + r.owner : ""}</div>
+          </div>
+          {b && !r.done && <span className={"duebad " + b.cls}>{b.text}</span>}
+        </div>
+      );
+    };
+    const Block = ({ title, list }) => list.length === 0 ? null : (
+      <>
+        <div className="sectitle"><h2>{title}</h2><span className="cnt">{list.length} รายการ</span></div>
+        <div className="card">{list.map((r) => <Row key={r.id} r={r} />)}</div>
+      </>
+    );
+
+    return (
+      <>
+        <div className="sectitle" style={{ marginTop: 0 }}>
+          <h2>ติดตามงานเตรียมกิจกรรม</h2>
+          <span className="cnt">ค้างอยู่ {open.length} รายการ · เสร็จแล้ว {fin.length}</span>
+        </div>
+        {mine.length === 0 ? (
+          <div className="card empty"><Care size={112} mood="happy" />
+            <h3 style={{ marginTop: 8 }}>
+              {rows.length > 0 ? "กลุ่มของคุณครูยังไม่มีงานเตรียม" : "ยังไม่มีรายการงานเตรียม"}</h3>
+            <p>{rows.length > 0
+              ? `ทั้งระบบมีอยู่ ${rows.length} รายการ กดปุ่มด้านล่างเพื่อดูของทุกกลุ่ม`
+              : admin ? "เปิดกิจกรรมแล้วกดปุ่มเช็กลิสต์ เพื่อเพิ่มงานย่อยที่ต้องทำก่อนถึงวันจัด"
+              : "เมื่อผู้ดูแลกำหนดงานเตรียม รายการจะมาแสดงที่นี่"}</p>
+            {rows.length > 0 && <button className="btn btn-g" style={{ marginTop: 14 }}
+              onClick={() => pickUnit("")}>ดูงานเตรียมทุกกลุ่ม</button>}</div>
+        ) : (
+          <>
+            <Block title="เลยกำหนดแล้ว" list={late} />
+            <Block title="ครบกำหนดใน 7 วัน" list={soon} />
+            <Block title="กำหนดถัดไป" list={later} />
+            <Block title="เสร็จแล้ว" list={fin} />
+          </>
+        )}
+      </>
+    );
+  };
+
   const Report = () => {
     const csv = () => {
       const head = ["ลำดับ", "งานที่", "ชื่อกิจกรรม", "ผู้รับผิดชอบ", "ครูผู้ประสานงาน", "วันที่", "ถึงวันที่", "เวลา", "สถานที่",
-        "กลุ่มเป้าหมาย", "ประเภทกิจกรรม", "สถานะ", "ผู้เข้าร่วมจริง", "จำนวนผู้ไม่เข้าร่วม", "รายชื่อผู้ไม่เข้าร่วม", "ผลการดำเนินงาน", "อัลบั้มภาพ"];
+        "กลุ่มเป้าหมาย", "ประเภทกิจกรรม", "สถานะ", "ผู้เข้าร่วมจริง", "จำนวนผู้ไม่เข้าร่วม", "รายชื่อผู้ไม่เข้าร่วม", "ผลการดำเนินงาน", "อัลบั้มภาพ", "งานเตรียมทั้งหมด", "เตรียมเสร็จแล้ว", "เลยกำหนด"];
       const rows = acts.map((a, i) => [i + 1, a.no, a.name, unitName(a.unitId), a.contact, thDate(a.date), thDate(a.dateEnd), a.time, a.place,
         a.target, (catOf(a.cat) || {}).label || "", STATUS[statusOf(a)].label, a.joinCount, a.absentees.length,
-        a.absentees.map((p) => p.name + (p.unit ? `(${p.unit})` : "")).join(" / "), a.result, a.albumUrl]);
+        a.absentees.map((p) => p.name + (p.unit ? `(${p.unit})` : "")).join(" / "), a.result, a.albumUrl,
+        taskStat(a).total, taskStat(a).done, taskStat(a).late]);
       const body = [head, ...rows].map((r) => r.map((c) => `"${String(c == null ? "" : c).replace(/"/g, '""')}"`).join(",")).join("\n");
       download(`สรุปกิจกรรม-${data.meta.year}.csv`, "\uFEFF" + body, "text/csv;charset=utf-8;");
       say("ดาวน์โหลดไฟล์ CSV แล้ว");
@@ -1175,6 +1437,29 @@ export default function App() {
             </div>
           </div>
         </div>
+
+        {stats.taskLate > 0 && (
+          <div className="card" style={{ marginBottom: 14, borderLeft: "5px solid var(--red)" }}>
+            <h3 style={{ fontSize: 16, marginBottom: 8 }}>งานเตรียมที่เลยกำหนด {stats.taskLate} รายการ</h3>
+            <div className="plist">
+              {acts.flatMap((a) => (a.tasks || [])
+                .filter((t) => !t.done && t.due && t.due < TODAY)
+                .map((t) => ({ ...t, act: a })))
+                .sort((x, y) => x.due.localeCompare(y.due))
+                .slice(0, 8)
+                .map((t) => (
+                  <div className="prow" key={t.id}>
+                    <div className="pav" style={{ background: "var(--red)", color: "#fff" }}>!</div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontWeight: 600 }}>{t.title}</div>
+                      <div className="usub">งานที่ {t.act.no} {t.act.name}
+                        {t.owner ? " · " + t.owner : ""} · กำหนด {thDate(t.due)}</div>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </div>
+        )}
 
         <div className="card" style={{ marginBottom: 14 }}>
           <h3 style={{ fontSize: 16, marginBottom: 14 }}>ไทม์ไลน์กิจกรรมตลอดปีการศึกษา</h3>
@@ -1269,7 +1554,7 @@ export default function App() {
               <h3 style={{ marginTop: 8 }}>{cur.name || "ยังไม่ได้ตั้งชื่อกิจกรรม"}</h3>
               <p>{u ? "รับผิดชอบโดย " + u.name : "ยังไม่ได้มอบหมายผู้รับผิดชอบ"}</p>
             </div>
-            <button className="x" onClick={() => setModal(null)}>✕</button>
+            <button className="x" aria-label="ปิดหน้าต่าง" onClick={() => setModal(null)}>✕</button>
           </div>
           <div style={{ fontSize: 14, color: "#4A5069", display: "flex", flexDirection: "column", gap: 7 }}>
             <div>📅 {cur.date
@@ -1281,8 +1566,8 @@ export default function App() {
             {cur.contact && <div>📞 ผู้ประสานงาน: {cur.contact}</div>}
             {catOf(cur.cat) && <div>{catOf(cur.cat).icon} ประเภท: {catOf(cur.cat).label}</div>}
             {cur.joinCount && <div>🙋 ผู้เข้าร่วมจริง {cur.joinCount} คน</div>}
-            {cur.docUrl && <div>📎 <a href={cur.docUrl} target="_blank" rel="noreferrer">เปิดคำสั่ง / เอกสารแนบ</a></div>}
-            {cur.albumUrl && <div>🖼 <a href={cur.albumUrl} target="_blank" rel="noreferrer">ดูอัลบั้มภาพกิจกรรม</a></div>}
+            {cur.docUrl && <div>📎 <a href={safeUrl(cur.docUrl)} target="_blank" rel="noreferrer">เปิดคำสั่ง / เอกสารแนบ</a></div>}
+            {cur.albumUrl && <div>🖼 <a href={safeUrl(cur.albumUrl)} target="_blank" rel="noreferrer">ดูอัลบั้มภาพกิจกรรม</a></div>}
             {cur.result && <div>📝 ผลการดำเนินงาน: {cur.result}</div>}
           </div>
 
@@ -1356,10 +1641,10 @@ export default function App() {
           ) : (
             <>
               <div className="mhead">
-                <Care size={54} mood="search" />
+                <Care size={64} mood="search" />
                 <div><h3>สรุปหลังกิจกรรม</h3>
                   <p>งานที่ {cur.no} · {cur.name || "ยังไม่ตั้งชื่อกิจกรรม"}</p></div>
-                <button className="x" onClick={() => setModal(null)}>✕</button>
+                <button className="x" aria-label="ปิดหน้าต่าง" onClick={() => setModal(null)}>✕</button>
               </div>
               <div className="row2">
                 <div className="field"><label>จำนวนผู้เข้าร่วม (คน)</label>
@@ -1419,7 +1704,8 @@ export default function App() {
     const [f, setF] = useState(cur || { no: nextNo, name: "", unitId: "", cat: "", albumUrl: "", joinCount: "", date: modal.date || "", dateEnd: "", time: "", place: "", dress: "", target: "", contact: "", docUrl: "" });
     const set = (k, v) => setF({ ...f, [k]: v });
     const submit = () => {
-      const body = { no: Number(f.no), name: f.name, unitId: f.unitId, cat: f.cat || "", date: f.date,
+      const noVal = Number(f.no) > 0 ? Number(f.no) : nextNo;
+      const body = { no: noVal, name: f.name, unitId: f.unitId, cat: f.cat || "", date: f.date,
         dateEnd: f.dateEnd && f.dateEnd > f.date ? f.dateEnd : "", time: f.time,
         place: f.place, dress: f.dress, target: f.target, contact: f.contact, docUrl: f.docUrl };
       if (isNew) save({ ...data, activities: [...data.activities, { id: "a" + uid(), ...body, result: "", closed: false, absentees: [], updatedAt: new Date().toISOString() }] }, "เพิ่มกิจกรรมแล้ว");
@@ -1427,6 +1713,7 @@ export default function App() {
       if (f.date) { const d = new Date(f.date + "T00:00:00"); setCursor({ y: d.getFullYear(), m: d.getMonth() }); setSel(f.date); }
       setModal(null);
     };
+    const [askDel, setAskDel] = useState(false);
     const del = () => { save({ ...data, activities: data.activities.filter((a) => a.id !== cur.id) }, "ลบกิจกรรมแล้ว"); setModal(null); };
     return (
       <div className="ovl" onClick={() => setModal(null)}>
@@ -1434,11 +1721,16 @@ export default function App() {
           <div className="mhead">
             <div><h3>{isNew ? "เพิ่มกิจกรรม" : "แก้ไขกิจกรรม"}</h3>
               <p>ใส่วันที่เพื่อให้กิจกรรมขึ้นบนปฏิทินหน้าแรก</p></div>
-            <button className="x" onClick={() => setModal(null)}>✕</button>
+            <button className="x" aria-label="ปิดหน้าต่าง" onClick={() => setModal(null)}>✕</button>
           </div>
           <div className="row2">
             <div className="field"><label>งานที่ (ระบบใส่ให้ ไม่ต้องแก้ก็ได้)</label>
-              <input className="inp" type="number" value={f.no} onChange={(e) => set("no", e.target.value)} /></div>
+              <input className="inp" type="number" value={f.no} onChange={(e) => set("no", e.target.value)} />
+              {data.activities.some((x) => x.id !== (cur || {}).id && Number(x.no) === Number(f.no)) &&
+                <div style={{ color: "#C4661F", fontSize: 12.5, marginTop: 6 }}>
+                  เลขงานนี้ซ้ำกับกิจกรรมอื่น ใช้ได้แต่จะสับสนตอนอ้างอิง
+                </div>}
+            </div>
             <div className="field"><label>กลุ่มผู้รับผิดชอบ</label>
               <select className="inp" value={f.unitId} onChange={(e) => set("unitId", e.target.value)}>
                 <option value="">— ยังไม่มอบหมาย —</option>
@@ -1472,6 +1764,15 @@ export default function App() {
             <div className="field"><label>ถึงวันที่ (เว้นว่างถ้าจัดวันเดียว)</label>
               <input className="inp" type="date" value={f.dateEnd || ""} min={f.date}
                 onChange={(e) => set("dateEnd", e.target.value)} disabled={!f.date} />
+              {f.date && (() => {
+                const clash = data.activities.filter((x) => x.id !== (cur || {}).id && x.date && x.name
+                  && x.date <= f.date && f.date <= lastDay(x));
+                return clash.length ? (
+                  <div style={{ color: "#C4661F", fontSize: 12.5, marginTop: 6 }}>
+                    วันนี้มีกิจกรรมอยู่แล้ว {clash.length} รายการ: {clash.map((x) => x.name).join(", ").slice(0, 60)}
+                  </div>
+                ) : null;
+              })()}
               {f.dateEnd && f.date && f.dateEnd < f.date &&
                 <div style={{ color: "var(--red)", fontSize: 12.5, marginTop: 6 }}>วันสิ้นสุดต้องไม่ก่อนวันเริ่ม</div>}
             </div>
@@ -1495,7 +1796,21 @@ export default function App() {
           <div style={{ display: "flex", gap: 9, marginTop: 6, flexWrap: "wrap" }}>
             <button className="btn btn-p" onClick={submit}>{isNew ? "เพิ่มกิจกรรม" : "บันทึกการแก้ไข"}</button>
             <button className="btn btn-g" onClick={() => setModal(null)}>ยกเลิก</button>
-            {!isNew && <button className="btn btn-danger" style={{ marginLeft: "auto" }} onClick={del}>ลบกิจกรรม</button>}
+            {!isNew && <button className="btn btn-g" onClick={() => {
+              const copy = { ...cur, id: "a" + uid(), no: nextNo, name: (cur.name || "") + " (สำเนา)",
+                date: "", dateEnd: "", result: "", albumUrl: "", joinCount: "", closed: false, absentees: [],
+                tasks: (cur.tasks || []).map((t) => ({ ...t, id: uid(), done: false, due: "" })),
+                updatedAt: new Date().toISOString() };
+              save({ ...data, activities: [...data.activities, copy] }, "ทำสำเนาแล้ว เหลือใส่วันที่");
+              setModal({ type: "edit", id: copy.id });
+            }}>⧉ ทำสำเนา</button>}
+            {!isNew && (askDel
+              ? <span style={{ marginLeft: "auto", display: "flex", gap: 8, alignItems: "center" }}>
+                  <span style={{ fontSize: 13, color: "var(--red)" }}>ลบถาวร แน่ใจไหม</span>
+                  <button className="btn btn-danger" onClick={del}>ยืนยันลบ</button>
+                  <button className="btn btn-g" onClick={() => setAskDel(false)}>ยกเลิก</button>
+                </span>
+              : <button className="btn btn-danger" style={{ marginLeft: "auto" }} onClick={() => setAskDel(true)}>ลบกิจกรรม</button>)}
           </div>
         </div>
       </div>
@@ -1535,9 +1850,9 @@ export default function App() {
     return (
       <div className="ovl" onClick={() => setModal(null)}>
         <div className="modal" style={{ maxWidth: 420 }} onClick={(e) => e.stopPropagation()}>
-          <div className="mhead"><Care size={54} mood="alert" />
+          <div className="mhead"><Care size={64} mood="alert" />
             <div><h3>เข้าสู่ระบบผู้ดูแล</h3><p>ใช้อีเมลและรหัสผ่านของบัญชีผู้ดูแล</p></div>
-            <button className="x" onClick={() => setModal(null)}>✕</button></div>
+            <button className="x" aria-label="ปิดหน้าต่าง" onClick={() => setModal(null)}>✕</button></div>
           <div className="field"><label>อีเมลผู้ดูแล</label>
             <input className="inp" type="email" value={email} autoFocus
               onChange={(e) => { setEmail(e.target.value); setErr(""); }}
@@ -1566,7 +1881,8 @@ export default function App() {
       save({
         ...data,
         meta: { ...m, year: `ปีการศึกษา ${ACAD_YEAR}` },
-        activities: data.activities.map((a) => ({ ...a, date: "", dateEnd: "", time: "", place: "", dress: "", target: "", contact: "", docUrl: "", result: "", closed: false, absentees: [] })),
+        activities: data.activities.map((a) => ({ ...a, date: "", dateEnd: "", time: "", place: "", dress: "", target: "", contact: "", docUrl: "", result: "", albumUrl: "", joinCount: "",
+          tasks: (a.tasks || []).map((t) => ({ ...t, done: false, due: "" })), closed: false, absentees: [] })),
       }, "เริ่มปีการศึกษาใหม่แล้ว");
       setModal(null);
     };
@@ -1584,7 +1900,7 @@ export default function App() {
       <div className="ovl" onClick={() => setModal(null)}>
         <div className="modal" style={{ maxWidth: 430 }} onClick={(e) => e.stopPropagation()}>
           <div className="mhead"><div><h3>ตั้งค่าระบบ</h3><p>ครูที่เปิดลิงก์จะเห็นข้อมูลแบบอ่านอย่างเดียว</p></div>
-            <button className="x" onClick={() => setModal(null)}>✕</button></div>
+            <button className="x" aria-label="ปิดหน้าต่าง" onClick={() => setModal(null)}>✕</button></div>
           <div className="field"><label>ชื่อโรงเรียน</label>
             <input className="inp" value={m.school} onChange={(e) => setM({ ...m, school: e.target.value })} /></div>
           <div className="field"><label>ปีการศึกษา</label>
@@ -1624,6 +1940,9 @@ export default function App() {
                       try {
                         const j = JSON.parse(fr.result);
                         if (!j || !Array.isArray(j.activities)) throw new Error("bad");
+                        const ok = window.confirm(
+                          `ไฟล์นี้มี ${j.activities.length} กิจกรรม การกู้คืนจะเขียนทับข้อมูลปัจจุบันทั้งหมด (${data.activities.length} กิจกรรม) ยืนยันหรือไม่`);
+                        if (!ok) return;
                         save({ ...SEED, ...j, units: Array.isArray(j.units) && j.units.length ? j.units : SEED.units }, "กู้คืนข้อมูลแล้ว");
                         setModal(null);
                       } catch (err) { say("ไฟล์ไม่ถูกต้อง", "!"); }
@@ -1656,14 +1975,15 @@ export default function App() {
 
   const BulkModal = () => {
     const [txt, setTxt] = useState("");
-    const lines = txt.split("\n").map((l) => l.trim()).filter(Boolean);
+    const lines = txt.split("\n").map((l) => l.trim())
+      .filter((l) => l && l.replace(/\|/g, "").trim());
     const add = () => {
       let no = Math.max(0, ...data.activities.map((a) => a.no));
       const added = lines.map((l) => {
         const [name, unitTxt] = l.split("|").map((x) => (x || "").trim());
         const u = data.units.find((x) => unitTxt && (x.name === unitTxt || x.name.includes(unitTxt)));
         no += 1;
-        return { id: "a" + uid(), no, name, unitId: u ? u.id : "", cat: "", albumUrl: "", joinCount: "", date: "", dateEnd: "", time: "", place: "",
+        return { id: "a" + uid(), no, name, unitId: u ? u.id : "", cat: "", albumUrl: "", joinCount: "", tasks: [], date: "", dateEnd: "", time: "", place: "",
           dress: "", target: "", contact: "", docUrl: "", result: "", closed: false, absentees: [], updatedAt: new Date().toISOString() };
       });
       save({ ...data, activities: [...data.activities, ...added] }, `เพิ่ม ${added.length} กิจกรรมแล้ว`);
@@ -1674,7 +1994,7 @@ export default function App() {
         <div className="modal" onClick={(e) => e.stopPropagation()}>
           <div className="mhead"><div><h3>เพิ่มหลายงานพร้อมกัน</h3>
             <p>พิมพ์หรือวางทีละบรรทัด ระบบจะไล่เลขงานให้เอง แล้วค่อยเข้าไปใส่วันที่ทีหลัง</p></div>
-            <button className="x" onClick={() => setModal(null)}>✕</button></div>
+            <button className="x" aria-label="ปิดหน้าต่าง" onClick={() => setModal(null)}>✕</button></div>
           <div className="field"><label>หนึ่งบรรทัดต่อหนึ่งกิจกรรม ใส่กลุ่มผู้รับผิดชอบต่อท้ายด้วย | ได้</label>
             <textarea className="inp" style={{ minHeight: 170 }} value={txt} onChange={(e) => setTxt(e.target.value)}
               placeholder={"กิจกรรมวันไหว้ครู | ภาษาไทย\nกิจกรรมกีฬาสี | ศิลปะ\nกิจกรรมวันวิทยาศาสตร์ | วิทยาศาสตร์"} /></div>
@@ -1701,7 +2021,7 @@ export default function App() {
         <div className="modal" onClick={(e) => e.stopPropagation()}>
           <div className="mhead"><div><h3>จัดการกลุ่มผู้รับผิดชอบ</h3>
             <p>แก้ชื่อและเพิ่มกลุ่มได้ที่นี่ ส่วนการลบกลุ่มต้องทำในตาราง activity360_units บน Supabase</p></div>
-            <button className="x" onClick={() => setModal(null)}>✕</button></div>
+            <button className="x" aria-label="ปิดหน้าต่าง" onClick={() => setModal(null)}>✕</button></div>
           {["กลุ่มสาระการเรียนรู้", "กลุ่มบริหาร"].map((t) => (
             <div key={t} style={{ marginBottom: 14 }}>
               <div className="usub" style={{ marginBottom: 6 }}>{t}</div>
@@ -1738,11 +2058,135 @@ export default function App() {
     );
   };
 
+  const PosterModal = () => {
+    const a = cur;
+    const tone = MONTH_TONE[a.date ? Number(a.date.slice(5, 7)) - 1 : 0];
+    const d = a.date ? a.date.split("-") : null;
+    return (
+      <div className="ovl" onClick={() => setModal(null)}>
+        <div onClick={(e) => e.stopPropagation()}>
+          <div className="posterbox">
+            <div className="ptop" style={{ background: `linear-gradient(130deg, ${tone[0]}, ${tone[1]})` }}>
+              <span className="pc" style={{ width: 120, height: 120, right: -34, top: -44 }} />
+              <span className="pc" style={{ width: 46, height: 46, left: "42%", bottom: -22 }} />
+              <span className="pcat">{catOf(a.cat) ? `${catOf(a.cat).icon} ${catOf(a.cat).label}` : "กิจกรรมโรงเรียน"}</span>
+              <h3>{a.name || "ยังไม่ตั้งชื่อกิจกรรม"}</h3>
+            </div>
+            <div className="pdate">
+              <div className="pd">
+                <b>{d ? Number(d[2]) : "-"}</b>
+                <span>{d ? TH_MS[Number(d[1]) - 1] : ""}</span>
+              </div>
+              <div>
+                <div style={{ fontWeight: 600 }}>{a.date ? thFull(a.date) : "ยังไม่กำหนดวันที่"}</div>
+                <div className="usub">{spanDays(a) > 1 ? `ต่อเนื่อง ${spanDays(a)} วัน ถึง ${thDate(a.dateEnd)}` : ""}
+                  {a.time ? (spanDays(a) > 1 ? " · " : "") + "เวลา " + a.time + " น." : ""}</div>
+              </div>
+            </div>
+            <div className="pbody">
+              {a.place && <div>📍 {a.place}</div>}
+              {a.target && <div>👥 {a.target}</div>}
+              {a.dress && <div>👔 การแต่งกาย {a.dress}</div>}
+              <div>🏫 รับผิดชอบโดย {unitName(a.unitId) || "ยังไม่มอบหมาย"}</div>
+            </div>
+            <div className="pfoot">
+              <Care size={58} mood="happy" />
+              <div><b>{data.meta.school}</b><br />{data.meta.year}</div>
+            </div>
+          </div>
+          <div className="noposter" style={{ display: "flex", gap: 9, marginTop: 14, justifyContent: "center" }}>
+            <button className="btn btn-p" onClick={() => window.print()}>🖨 พิมพ์ / บันทึกเป็น PDF</button>
+            <button className="btn btn-g" onClick={() => setModal(null)}>ปิด</button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const TasksModal = () => {
+    const [list, setList] = useState(cur.tasks || []);
+    const [title, setTitle] = useState("");
+    const [owner, setOwner] = useState("");
+    const [due, setDue] = useState("");
+    const add = () => {
+      if (!title.trim()) return;
+      setList([...list, { id: uid(), title: title.trim(), owner: owner.trim(), due, done: false }]);
+      setTitle(""); setDue("");
+    };
+    return (
+      <div className="ovl" onClick={() => setModal(null)}>
+        <div className="modal" onClick={(e) => e.stopPropagation()}>
+          <div className="mhead">
+            <div><h3>เช็กลิสต์เตรียมงาน</h3>
+              <p>งานที่ {cur.no} · {cur.name || "ยังไม่ตั้งชื่อกิจกรรม"}
+                {cur.date ? ` · จัดวันที่ ${thDate(cur.date)}` : ""}</p></div>
+            <button className="x" aria-label="ปิดหน้าต่าง" onClick={() => setModal(null)}>✕</button>
+          </div>
+          <div className="field"><label>งานที่ต้องเตรียม</label>
+            <input className="inp" value={title} onChange={(e) => setTitle(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && add()} placeholder="เช่น จองหอประชุม / ทำป้ายไวนิล / ขออนุมัติงบ" /></div>
+          <div className="row2">
+            <div className="field"><label>ผู้รับผิดชอบ</label>
+              <input className="inp" value={owner} onChange={(e) => setOwner(e.target.value)} placeholder="ชื่อครูหรือกลุ่มงาน" /></div>
+            <div className="field"><label>กำหนดเสร็จ</label>
+              <input className="inp" type="date" value={due} onChange={(e) => setDue(e.target.value)} /></div>
+          </div>
+          <div style={{ display: "flex", gap: 9, flexWrap: "wrap" }}>
+            <button className="btn btn-n" onClick={add} disabled={!title.trim()}>+ เพิ่มรายการ</button>
+            <button className="btn btn-g" disabled={!cur.date} title={cur.date ? "" : "ต้องกำหนดวันจัดกิจกรรมก่อน"}
+              onClick={() => {
+                const base = new Date(cur.date + "T00:00:00");
+                const add9 = TASK_TEMPLATE.map((t) => {
+                  const d = new Date(base); d.setDate(d.getDate() - t.before);
+                  return { id: uid(), title: t.title, owner: "", due: ymd(d), done: false };
+                }).filter((t) => !list.some((x) => x.title === t.title));
+                setList([...list, ...add9]);
+              }}>⚡ ใช้ชุดงานมาตรฐาน 9 ขั้น</button>
+          </div>
+
+          <h4 style={{ fontSize: 14.5, margin: "20px 0 10px" }}>
+            รายการทั้งหมด ({list.filter((x) => x.done).length}/{list.length})</h4>
+          {list.length === 0 ? (
+            <div style={{ background: "var(--cream)", borderRadius: 16, padding: 16, textAlign: "center",
+              color: "var(--gray)", fontSize: 14 }}>ยังไม่มีรายการ เพิ่มงานย่อยที่ต้องทำก่อนถึงวันจัดกิจกรรม</div>
+          ) : (
+            <div className="plist">
+              {list.map((t) => {
+                const b = dueBadge(t.due);
+                return (
+                  <div className={"tkrow" + (t.done ? " done" : "")} key={t.id}>
+                    <button className={"tkbox" + (t.done ? " on" : "")}
+                      aria-label={t.done ? "ยกเลิกเครื่องหมายเสร็จ" : "ทำเครื่องหมายว่าเสร็จ"}
+                      onClick={() => setList(list.map((x) => x.id === t.id ? { ...x, done: !x.done } : x))}>
+                      {t.done ? "✓" : ""}</button>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div className="tkt">{t.title}</div>
+                      {(t.owner || t.due) && <div className="usub">
+                        {t.owner || ""}{t.owner && t.due ? " · " : ""}{t.due ? "กำหนด " + thDate(t.due) : ""}</div>}
+                    </div>
+                    {b && !t.done && <span className={"duebad " + b.cls}>{b.text}</span>}
+                    <button className="btn btn-danger btn-sm"
+                      onClick={() => setList(list.filter((x) => x.id !== t.id))}>ลบ</button>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+          <div style={{ display: "flex", gap: 9, marginTop: 20 }}>
+            <button className="btn btn-p" onClick={() => { patchAct(cur.id, { tasks: list }, "บันทึกเช็กลิสต์แล้ว"); setModal(null); }}>
+              บันทึก {list.length} รายการ</button>
+            <button className="btn btn-g" onClick={() => setModal(null)}>ยกเลิก</button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   const QuickModal = () => (
     <div className="ovl" onClick={() => setModal(null)} style={{ alignItems: "flex-end" }}>
       <div className="modal" style={{ maxWidth: 480, borderRadius: "26px 26px 0 0", marginBottom: -20 }} onClick={(e) => e.stopPropagation()}>
         <div className="mhead"><div><h3>เลือกงานที่จะสรุป</h3><p>แตะงานเพื่อบันทึกผลและผู้ไม่เข้าร่วม</p></div>
-          <button className="x" onClick={() => setModal(null)}>✕</button></div>
+          <button className="x" aria-label="ปิดหน้าต่าง" onClick={() => setModal(null)}>✕</button></div>
         <div className="plist">
           {acts.filter((a) => a.name).map((a) => (
             <button className="prow" key={a.id} style={{ textAlign: "left", width: "100%" }}
@@ -1770,12 +2214,12 @@ export default function App() {
   };
 
   return (
-    <div className="tp">
+    <div className={"tp" + (modal && modal.type === "poster" ? " posteropen" : "")}>
       <style dangerouslySetInnerHTML={{ __html: CSS }} />
 
       <aside className="sidebar">
         <div className="brandbox">
-          <div className="brandmark"><Care size={30} /></div>
+          <div className="brandmark"><Care size={34} /></div>
           <div><div className="brandname">TUPKLN<br />ACTIVITY 360</div>
             <div className="brandsub">ปฏิทินกิจกรรมโรงเรียน</div></div>
         </div>
@@ -1824,6 +2268,7 @@ export default function App() {
         <div className="pagewrap" key={page}>
           {page === "cal" && <Calendar />}
           {page === "acts" && <Acts />}
+          {page === "tasks" && <Tasks />}
           {page === "report" && <Report />}
         </div>
       </main>
@@ -1833,9 +2278,9 @@ export default function App() {
           <button key={id} className={"bitem" + (page === id ? " on" : "")} onClick={() => setPage(id)}>
             <span style={{ fontSize: 19 }}>{ic}</span>{l}</button>
         ))}
-        <button className="bplus" onClick={() => admin ? setModal({ type: "quick" }) : setModal({ type: "pin" })}>+</button>
-        <button className={"bitem" + (page === "report" ? " on" : "")} onClick={() => setPage("report")}>
-          <span style={{ fontSize: 19 }}>📊</span>รายงาน</button>
+        <button className="bplus" aria-label="เพิ่มหรือสรุปกิจกรรม" onClick={() => admin ? setModal({ type: "quick" }) : setModal({ type: "pin" })}>+</button>
+        <button className={"bitem" + (page === "tasks" ? " on" : "")} onClick={() => setPage("tasks")}>
+          <span style={{ fontSize: 19 }}>✅</span>ติดตามงาน</button>
         <button className="bitem" onClick={() => admin ? leaveAdmin() : setModal({ type: "pin" })}>
           <span style={{ fontSize: 19 }}>{admin ? "🚪" : "🔒"}</span>{admin ? "ออก" : "ผู้ดูแล"}</button>
       </nav>
@@ -1848,6 +2293,8 @@ export default function App() {
       {modal && modal.type === "quick" && <QuickModal />}
       {modal && modal.type === "bulk" && <BulkModal />}
       {modal && modal.type === "units" && <UnitsModal />}
+      {modal && modal.type === "poster" && cur && <PosterModal />}
+      {modal && modal.type === "tasks" && cur && <TasksModal />}
 
       {party && (
         <>
@@ -1861,11 +2308,16 @@ export default function App() {
             ))}
           </div>
           <div className="partybox">
-            <Care size={92} mood="happy" />
+            <Care size={112} mood="happy" />
             <h3 style={{ marginTop: 6 }}>สรุปครบทุกกิจกรรมแล้ว</h3>
             <p style={{ color: "var(--gray)", fontSize: 14, margin: "6px 0 0" }}>ขอบคุณคุณครูทุกท่านครับ</p>
           </div>
         </>
+      )}
+      {offline && (
+        <div className="toast noprint" style={{ background: "var(--orange)", bottom: "auto", top: 14 }}>
+          <span>📶</span>ตอนนี้ไม่ได้เชื่อมต่ออินเทอร์เน็ต ข้อมูลที่เห็นเป็นข้อมูลล่าสุดที่โหลดไว้
+        </div>
       )}
       {toast && <div className="toast"><span>{toast.icon}</span>{toast.msg}</div>}
     </div>
