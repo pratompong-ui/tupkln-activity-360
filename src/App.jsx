@@ -1,4 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
+import Dashboard from "./features/dashboard/Dashboard.jsx";
+import MyWork from "./features/my-work/MyWork.jsx";
+import { ADMIN_TOOL_ITEMS, MAIN_NAV_ITEMS, MANAGEMENT_NAV_ITEMS } from "./features/navigation.js";
 
 /* ============================================================
    TUPKLN ACTIVITY 360 — ปฏิทินกิจกรรมและบันทึกผู้ไม่เข้าร่วม
@@ -192,6 +195,44 @@ textarea.inp{min-height:70px;resize:vertical;}
   border-radius:16px;padding:7px 13px;font-size:13px;font-weight:600;}
 .dot{width:8px;height:8px;border-radius:50%;}
 .bnav{display:none;}
+
+/* ---------- V2 dashboard and module shells ---------- */
+.dashboard,.my-work{display:flex;flex-direction:column;gap:18px;}
+.dash-welcome,.work-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;
+  border-radius:26px;padding:25px 28px;background:linear-gradient(125deg,#16205C,#334697);color:#fff;
+  box-shadow:0 12px 30px rgba(22,32,92,.16);}
+.dash-welcome h1,.work-head h1{font-size:26px;margin:3px 0 5px;}
+.dash-welcome p,.work-head p{margin:0;color:#DDE3FF;}
+.eyebrow{display:block;font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--pink-2);}
+.dash-scope{display:flex;flex-direction:column;gap:5px;min-width:240px;font-size:12px;color:#DDE3FF;}
+.dash-scope select,.work-head select{border:1px solid rgba(255,255,255,.28);border-radius:13px;padding:9px 12px;
+  background:#fff;color:var(--ink);font:inherit;max-width:300px;}
+.dash-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.dash-kpis button{background:#fff;border-radius:19px;padding:15px 17px;text-align:left;box-shadow:0 2px 14px rgba(22,32,92,.06);
+  display:grid;grid-template-columns:1fr auto;align-items:end;gap:0 8px;border:1px solid transparent;}
+.dash-kpis button:hover{border-color:#D7DDF5;transform:translateY(-1px);}
+.dash-kpis button.attention{border-color:#F3C6C6;background:#FFF8F8;}
+.dash-kpis span{font-size:13px;color:var(--gray);}.dash-kpis strong{font-size:28px;line-height:1;color:var(--navy);grid-row:1/3;grid-column:2;}
+.dash-kpis small{font-size:11.5px;color:var(--gray);}
+.dash-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:start;}
+.dash-panel{background:#fff;border-radius:21px;padding:18px 19px;box-shadow:0 2px 14px rgba(22,32,92,.06);min-width:0;}
+.dash-panel.warn{border-top:3px solid var(--orange)}.dash-panel.danger{border-top:3px solid var(--red)}
+.dash-panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;}
+.dash-panel-head h2{font-size:16px;}.dash-panel-head span{font-size:12px;color:var(--gray);}
+.dash-list{display:flex;flex-direction:column;gap:4px;}
+.dash-row{width:100%;display:flex;align-items:center;gap:11px;text-align:left;border-radius:13px;padding:9px 8px;min-width:0;}
+.dash-row:hover{background:var(--cream);}.dash-row-main{flex:1;min-width:0;display:flex;flex-direction:column;}
+.dash-row-main strong{font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.dash-row-main small{font-size:11.5px;color:var(--gray);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.dash-date{min-width:62px;font-size:11px;font-weight:700;color:var(--navy);background:var(--lightblue);border-radius:10px;padding:5px 7px;text-align:center;}
+.dash-overdue{min-width:62px;font-size:11px;font-weight:700;color:var(--red);background:#FBE6E6;border-radius:10px;padding:5px 7px;text-align:center;}
+.dash-empty{padding:20px 8px;text-align:center;color:var(--gray);font-size:13px;}
+.text-action{font-size:12px!important;font-weight:600;color:var(--pink)!important;padding:4px 6px;white-space:nowrap;}
+.work-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.work-summary div{background:#fff;border-radius:18px;padding:15px 18px;box-shadow:0 2px 14px rgba(22,32,92,.06);display:flex;align-items:baseline;gap:10px;}
+.work-summary strong{font-size:27px;color:var(--navy);}.work-summary span{font-size:13px;color:var(--gray);}
+.my-work-empty{max-width:680px;margin:40px auto;text-align:center;padding:34px;}.my-work-empty h1{font-size:23px;margin:6px 0;}
+.my-work-empty p{color:var(--gray);margin:0 auto 20px;max-width:55ch;}.my-work-empty select{max-width:420px;}
 
 @keyframes rise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
 @keyframes pop{from{opacity:0;transform:scale(.94);}to{opacity:1;transform:scale(1);}}
@@ -446,6 +487,11 @@ textarea.inp{min-height:70px;resize:vertical;}
   .bitem.on{color:var(--pink);font-weight:600;}
   .bplus{width:52px;height:52px;border-radius:20px;background:var(--pink);color:#fff;display:grid;place-items:center;
     font-size:26px;margin-top:-22px;box-shadow:0 8px 20px rgba(224,27,110,.36);}
+  .dash-welcome,.work-head{align-items:stretch;flex-direction:column;padding:21px 19px;gap:16px;}
+  .dash-scope{min-width:0;width:100%;}.dash-scope select,.work-head select{max-width:none;width:100%;}
+  .dash-kpis{grid-template-columns:1fr 1fr;}.dash-grid{grid-template-columns:1fr;}
+  .work-summary{grid-template-columns:1fr;}.dash-panel{padding:15px 13px;}
+  .dash-row{gap:8px;padding:9px 5px;}.dash-date,.dash-overdue{min-width:55px;}
 }
 @media print{
   .sidebar,.bnav,.noprint,.noprint-cal{display:none !important;}
@@ -756,7 +802,7 @@ function CountUp({ n, dur = 900 }) {
 export default function App() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState("cal");
+  const [page, setPage] = useState("home");
   const [admin, setAdmin] = useState(false);
   const [toast, setToast] = useState(null);
   const [modal, setModal] = useState(null);
@@ -819,7 +865,7 @@ export default function App() {
     return () => { alive = false; if (offAuth) offAuth(); if (offRealtime) offRealtime(); };
   }, []);
 
-  /* ดึงข้อมูลล่าสุดเองทุก 45 วินาที และทุกครั้งที่กลับมาที่หน้าจอ
+  /* Realtime เป็นช่องทางหลัก ส่วน polling ทุก 5 นาทีเป็น fallback และยังดึงเมื่อกลับมาที่หน้าจอ
      ข้ามการดึงระหว่างที่เปิดหน้าต่างกรอกข้อมูลอยู่ เพื่อไม่ให้ข้อมูลที่กำลังพิมพ์หาย */
   useEffect(() => {
     let stopped = false;
@@ -833,7 +879,7 @@ export default function App() {
         setSyncAt(new Date());
       } catch (e) {}
     };
-    const id = setInterval(pull, 45000);
+    const id = setInterval(pull, 300000);
     const onBack = () => { if (!document.hidden) pull(); };
     document.addEventListener("visibilitychange", onBack);
     window.addEventListener("focus", onBack);
@@ -973,13 +1019,21 @@ export default function App() {
   const tomorrowList = onDay(TOMORROW);
   const myActs = myUnit ? acts.filter((a) => a.unitId === myUnit) : [];
 
-  const NAV = [
-    { id: "cal", ic: "📅", label: "ปฏิทินกิจกรรม" },
-    { id: "acts", ic: "📋", label: "กิจกรรมทั้งหมด", badge: admin ? stats.todo || null : null },
-    { id: "docs", ic: "📨", label: "หนังสือ / งานมอบหมาย", badge: stats.docLate || null },
-    { id: "tasks", ic: "✅", label: "ติดตามงานเตรียม", badge: stats.taskLate || null },
-    { id: "report", ic: "📊", label: "รายงาน / พิมพ์" },
-  ];
+  const NAV = MAIN_NAV_ITEMS.map((item) => ({
+    ...item,
+    ic: item.icon,
+    badge: item.id === "my-work" && (stats.taskLate + stats.docLate) > 0
+      ? stats.taskLate + stats.docLate
+      : null,
+  }));
+  const MANAGEMENT_NAV = MANAGEMENT_NAV_ITEMS.map((item) => ({
+    ...item,
+    ic: item.icon,
+    badge: item.id === "acts" ? (admin ? stats.todo || null : null)
+      : item.id === "docs" ? stats.docLate || null
+      : item.id === "tasks" ? stats.taskLate || null
+      : null,
+  }));
 
   /* ---------- activity card ---------- */
   const ActCard = ({ a }) => {
@@ -2525,21 +2579,18 @@ export default function App() {
       <div className="ovl" onClick={() => setModal(null)} style={{ alignItems: "flex-end" }}>
         <div className="modal" style={{ maxWidth: 480, borderRadius: "26px 26px 0 0", marginBottom: -20 }}
           onClick={(e) => e.stopPropagation()}>
-          <div className="mhead"><div><h3>เมนูทั้งหมด</h3><p>{data.meta.school}</p></div>
+          <div className="mhead"><div><h3>เพิ่มเติม / จัดการระบบ</h3><p>{data.meta.school}</p></div>
             <button className="x" aria-label="ปิดหน้าต่าง" onClick={() => setModal(null)}>✕</button></div>
+          <h4 style={{ fontSize: 14.5, margin: "0 0 10px" }}>ข้อมูลและการติดตาม</h4>
           <div className="plist">
-            {NAV.map((n) => <Item key={n.id} ic={n.ic} label={n.label} badge={n.badge} onClick={() => go(n.id)} />)}
+            {MANAGEMENT_NAV.map((n) => <Item key={n.id} ic={n.ic} label={n.label} badge={n.badge} onClick={() => go(n.id)} />)}
           </div>
-          <h4 style={{ fontSize: 14.5, margin: "20px 0 10px" }}>ผู้ดูแล</h4>
+          <h4 style={{ fontSize: 14.5, margin: "20px 0 10px" }}>เครื่องมือผู้ดูแล</h4>
           <div className="plist">
             {admin ? (
               <>
-                <Item ic="➕" label="เพิ่มกิจกรรม" onClick={() => setModal({ type: "edit", id: null })} />
-                <Item ic="📨" label="ลงรับหนังสือ" onClick={() => setModal({ type: "doc", docId: null })} />
-                <Item ic="📝" label="สรุปหลังกิจกรรม" onClick={() => setModal({ type: "quick" })} />
-                <Item ic="📥" label="เพิ่มหลายงานพร้อมกัน" onClick={() => setModal({ type: "bulk" })} />
-                <Item ic="👥" label="จัดการกลุ่ม" onClick={() => setModal({ type: "units" })} />
-                <Item ic="⚙" label="ตั้งค่าระบบ" onClick={() => setModal({ type: "settings" })} />
+                {ADMIN_TOOL_ITEMS.map((item) => <Item key={item.modal} ic={item.icon} label={item.label}
+                  onClick={() => setModal({ type: item.modal, ...(item.modal === "doc" ? { docId: null } : item.modal === "edit" ? { id: null } : {}) })} />)}
                 <Item ic="🚪" label="ออกจากโหมดผู้ดูแล" onClick={() => { leaveAdmin(); setModal(null); }} />
               </>
             ) : (
@@ -2589,8 +2640,8 @@ export default function App() {
       <aside className="sidebar">
         <div className="brandbox">
           <div className="brandmark"><Care size={34} /></div>
-          <div><div className="brandname">TUPKLN<br />ACTIVITY 360</div>
-            <div className="brandsub">ปฏิทินกิจกรรมโรงเรียน</div></div>
+          <div><div className="brandname">TUPKLN<br />ACTIVITY 360 V2</div>
+            <div className="brandsub">TUPKLN 360 Module</div></div>
         </div>
         <div className="navgroup">เมนูหลัก</div>
         {NAV.map((n) => (
@@ -2599,19 +2650,11 @@ export default function App() {
             {n.badge ? <span className="navbadge">{n.badge}</span> : null}
           </button>
         ))}
-        <div className="navgroup">ผู้ดูแล</div>
-        {admin ? (
-          <>
-            <button className="navitem" onClick={() => setModal({ type: "edit", id: null })}><span className="ic">➕</span>เพิ่มกิจกรรม</button>
-            <button className="navitem" onClick={() => setModal({ type: "quick" })}><span className="ic">📝</span>สรุปหลังกิจกรรม</button>
-            <button className="navitem" onClick={() => setModal({ type: "bulk" })}><span className="ic">📥</span>เพิ่มหลายงานพร้อมกัน</button>
-            <button className="navitem" onClick={() => setModal({ type: "units" })}><span className="ic">👥</span>จัดการกลุ่ม</button>
-            <button className="navitem" onClick={() => setModal({ type: "settings" })}><span className="ic">⚙</span>ตั้งค่าระบบ</button>
-            <button className="navitem" onClick={leaveAdmin}><span className="ic">🚪</span>ออกจากระบบผู้ดูแล</button>
-          </>
-        ) : (
-          <button className="navitem" onClick={() => setModal({ type: "pin" })}><span className="ic">🔒</span>เข้าสู่ระบบผู้ดูแล</button>
-        )}
+        <div className="navgroup">เพิ่มเติม</div>
+        <button className="navitem" onClick={() => setModal({ type: "more" })}>
+          <span className="ic">⋯</span>เพิ่มเติม / จัดการระบบ
+          {(stats.taskLate + stats.docLate) > 0 ? <span className="navbadge">{stats.taskLate + stats.docLate}</span> : null}
+        </button>
         <div style={{ marginTop: 20, padding: "14px 12px", background: "var(--cream)", borderRadius: 16, fontSize: 12.5, color: "var(--gray)" }}>
           {data.meta.school}<br />{data.meta.year}
         </div>
@@ -2621,7 +2664,7 @@ export default function App() {
         <div className="topbar noprint">
           <div className="mobilebrand">
             <div className="brandmark" style={{ width: 38, height: 38 }}><Care size={26} /></div>
-            <div><div className="brandname" style={{ fontSize: 14 }}>TUPKLN ACTIVITY 360</div>
+            <div><div className="brandname" style={{ fontSize: 14 }}>TUPKLN ACTIVITY 360 V2</div>
               <div className="brandsub">{data.meta.year}</div></div>
           </div>
           <div className="grow" />
@@ -2635,7 +2678,13 @@ export default function App() {
         </div>
 
         <div className="pagewrap" key={page}>
+          {page === "home" && <Dashboard data={data} myUnit={myUnit} today={TODAY} unitName={unitName}
+            formatDate={thDate} onPickUnit={pickUnit} onNavigate={setPage}
+            onOpenActivity={(id) => setModal({ type: "view", id })} />}
           {page === "cal" && <Calendar />}
+          {page === "my-work" && <MyWork data={data} myUnit={myUnit} today={TODAY} unitName={unitName}
+            formatDate={thDate} onPickUnit={pickUnit} onNavigate={setPage}
+            onOpenActivity={(id) => setModal({ type: "view", id })} />}
           {page === "acts" && <Acts />}
           {page === "tasks" && <Tasks />}
           {page === "docs" && <Docs />}
@@ -2644,15 +2693,15 @@ export default function App() {
       </main>
 
       <nav className="bnav">
-        {[["cal", "📅", "ปฏิทิน"], ["acts", "📋", "กิจกรรม"]].map(([id, ic, l]) => (
+        {[["home", "⌂", "หน้าแรก"], ["cal", "📅", "ปฏิทิน"]].map(([id, ic, l]) => (
           <button key={id} className={"bitem" + (page === id ? " on" : "")} onClick={() => setPage(id)}>
             <span style={{ fontSize: 19 }}>{ic}</span>{l}</button>
         ))}
-        <button className="bplus" aria-label="เพิ่มหรือสรุปกิจกรรม" onClick={() => admin ? setModal({ type: "quick" }) : setModal({ type: "pin" })}>+</button>
-        <button className={"bitem" + (page === "docs" ? " on" : "")} onClick={() => setPage("docs")}>
-          <span style={{ fontSize: 19 }}>📨</span>หนังสือ</button>
+        <button className="bplus" aria-label="เพิ่มรายการ" onClick={() => admin ? setModal({ type: "edit", id: null }) : setModal({ type: "more" })}>+</button>
+        <button className={"bitem" + (page === "my-work" ? " on" : "")} onClick={() => setPage("my-work")}>
+          <span style={{ fontSize: 19 }}>✓</span>งานของฉัน</button>
         <button className="bitem" onClick={() => setModal({ type: "more" })}>
-          <span style={{ fontSize: 19 }}>⋯</span>เมนูทั้งหมด</button>
+          <span style={{ fontSize: 19 }}>⋯</span>เพิ่มเติม</button>
       </nav>
 
       {modal && modal.type === "view" && cur && <ViewModal />}

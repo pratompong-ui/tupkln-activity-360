@@ -232,10 +232,15 @@ window.activityAuth = {
 
 window.activityRealtime = {
   subscribe(callback) {
-    const channel = supabase.channel('activity360-web')
+    // Realtime is the primary sync path. Keep every table used by the current UI
+    // on one channel so the five-minute polling loop remains only a safety net.
+    const channel = supabase.channel('activity360-web-v2')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'activity360_settings' }, callback)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'activity360_units' }, callback)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'activity360_activities' }, callback)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'activity360_activity_private' }, callback)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'activity360_absentees' }, callback)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'activity360_docs' }, callback)
       .subscribe();
     return () => { supabase.removeChannel(channel); };
   },
