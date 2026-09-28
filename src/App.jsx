@@ -492,6 +492,7 @@ textarea.inp{min-height:70px;resize:vertical;}
   .dash-kpis{grid-template-columns:1fr 1fr;}.dash-grid{grid-template-columns:1fr;}
   .work-summary{grid-template-columns:1fr;}.dash-panel{padding:15px 13px;}
   .dash-row{gap:8px;padding:9px 5px;}.dash-date,.dash-overdue{min-width:55px;}
+  .desktop-add{display:none;}
 }
 @media print{
   .sidebar,.bnav,.noprint,.noprint-cal{display:none !important;}
@@ -824,6 +825,9 @@ export default function App() {
     window.addEventListener("offline", off);
     return () => { window.removeEventListener("online", on); window.removeEventListener("offline", off); };
   }, []);
+  useEffect(() => {
+    if (!admin && page === "report") setPage("home");
+  }, [admin, page]);
   const [saying, setSaying] = useState(null);
   const [bouncing, setBouncing] = useState(false);
   const pokeCare = () => {
@@ -1019,14 +1023,14 @@ export default function App() {
   const tomorrowList = onDay(TOMORROW);
   const myActs = myUnit ? acts.filter((a) => a.unitId === myUnit) : [];
 
-  const NAV = MAIN_NAV_ITEMS.map((item) => ({
+  const NAV = MAIN_NAV_ITEMS.filter((item) => !item.adminOnly || admin).map((item) => ({
     ...item,
     ic: item.icon,
     badge: item.id === "my-work" && (stats.taskLate + stats.docLate) > 0
       ? stats.taskLate + stats.docLate
       : null,
   }));
-  const MANAGEMENT_NAV = MANAGEMENT_NAV_ITEMS.map((item) => ({
+  const MANAGEMENT_NAV = MANAGEMENT_NAV_ITEMS.filter((item) => !item.adminOnly || admin).map((item) => ({
     ...item,
     ic: item.icon,
     badge: item.id === "acts" ? (admin ? stats.todo || null : null)
@@ -1076,7 +1080,7 @@ export default function App() {
             if (navigator.clipboard) navigator.clipboard.writeText(t).then(() => say("คัดลอกข้อความแล้ว วางในไลน์ได้เลย"), () => say("คัดลอกไม่สำเร็จ", "!"));
             else say("อุปกรณ์นี้คัดลอกอัตโนมัติไม่ได้", "!");
           }}>📋 คัดลอกข้อความ</button>
-          {admin && <button className="btn btn-p btn-sm" onClick={() => setModal({ type: "absent", id: a.id })}>บันทึกผู้ไม่เข้าร่วม</button>}
+          {admin && <button className="btn btn-p btn-sm" onClick={() => setModal({ type: "absent", id: a.id })}>สรุปผลกิจกรรม</button>}
           {admin && <button className="btn btn-g btn-sm" onClick={() => setModal({ type: "tasks", id: a.id })}>✅ เช็กลิสต์</button>}
           {admin && <button className="btn btn-g btn-sm" onClick={() => setModal({ type: "edit", id: a.id })}>แก้ไข</button>}
         </div>
@@ -1895,7 +1899,7 @@ export default function App() {
           <div style={{ display: "flex", gap: 9, marginTop: 20, flexWrap: "wrap" }}>
             {cur.date && <a className="btn btn-n" href={gcalUrl(cur, unitName(cur.unitId))}
               target="_blank" rel="noreferrer">+ Google ปฏิทิน</a>}
-            {admin && <button className="btn btn-p" onClick={() => setModal({ type: "absent", id: cur.id })}>บันทึกผู้ไม่เข้าร่วม</button>}
+            {admin && <button className="btn btn-p" onClick={() => setModal({ type: "absent", id: cur.id })}>สรุปผลกิจกรรม</button>}
             {admin && <button className="btn btn-g" onClick={() => setModal({ type: "edit", id: cur.id })}>แก้ไขกิจกรรม</button>}
             <button className="btn btn-g" onClick={() => setModal(null)}>ปิด</button>
           </div>
@@ -2581,16 +2585,14 @@ export default function App() {
           onClick={(e) => e.stopPropagation()}>
           <div className="mhead"><div><h3>เพิ่มเติม / จัดการระบบ</h3><p>{data.meta.school}</p></div>
             <button className="x" aria-label="ปิดหน้าต่าง" onClick={() => setModal(null)}>✕</button></div>
-          <h4 style={{ fontSize: 14.5, margin: "0 0 10px" }}>ข้อมูลและการติดตาม</h4>
           <div className="plist">
             {MANAGEMENT_NAV.map((n) => <Item key={n.id} ic={n.ic} label={n.label} badge={n.badge} onClick={() => go(n.id)} />)}
           </div>
-          <h4 style={{ fontSize: 14.5, margin: "20px 0 10px" }}>เครื่องมือผู้ดูแล</h4>
+          <h4 style={{ fontSize: 14.5, margin: "20px 0 10px" }}>{admin ? "ผู้ดูแลระบบ" : "สำหรับผู้ดูแล"}</h4>
           <div className="plist">
             {admin ? (
               <>
-                {ADMIN_TOOL_ITEMS.map((item) => <Item key={item.modal} ic={item.icon} label={item.label}
-                  onClick={() => setModal({ type: item.modal, ...(item.modal === "doc" ? { docId: null } : item.modal === "edit" ? { id: null } : {}) })} />)}
+                <Item ic="⚙" label="ตั้งค่าและเครื่องมือ" onClick={() => setModal({ type: "admin-tools" })} />
                 <Item ic="🚪" label="ออกจากโหมดผู้ดูแล" onClick={() => { leaveAdmin(); setModal(null); }} />
               </>
             ) : (
@@ -2602,20 +2604,17 @@ export default function App() {
     );
   };
 
-  const QuickModal = () => (
+  const AdminToolsModal = () => (
     <div className="ovl" onClick={() => setModal(null)} style={{ alignItems: "flex-end" }}>
       <div className="modal" style={{ maxWidth: 480, borderRadius: "26px 26px 0 0", marginBottom: -20 }} onClick={(e) => e.stopPropagation()}>
-        <div className="mhead"><div><h3>เลือกงานที่จะสรุป</h3><p>แตะงานเพื่อบันทึกผลและผู้ไม่เข้าร่วม</p></div>
+        <div className="mhead"><div><h3>ตั้งค่าและเครื่องมือ</h3><p>เครื่องมือที่ใช้งานเป็นครั้งคราวสำหรับผู้ดูแลระบบ</p></div>
           <button className="x" aria-label="ปิดหน้าต่าง" onClick={() => setModal(null)}>✕</button></div>
         <div className="plist">
-          {acts.filter((a) => a.name).map((a) => (
-            <button className="prow" key={a.id} style={{ textAlign: "left", width: "100%" }}
-              onClick={() => setModal({ type: "absent", id: a.id })}>
-              <div className="pav" style={{ background: colorOf(a.unitId), color: "#fff" }}>{a.no}</div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{a.name}</div>
-                <div className="usub">{unitName(a.unitId) || "ยังไม่มอบหมาย"}</div>
-              </div>
+          {ADMIN_TOOL_ITEMS.map((item) => (
+            <button className="prow" key={item.modal} style={{ textAlign: "left", width: "100%" }}
+              onClick={() => setModal({ type: item.modal })}>
+              <div className="pav" style={{ background: "#fff" }}>{item.icon}</div>
+              <div style={{ flex: 1, fontWeight: 600 }}>{item.label}</div>
             </button>
           ))}
         </div>
@@ -2668,6 +2667,7 @@ export default function App() {
               <div className="brandsub">{data.meta.year}</div></div>
           </div>
           <div className="grow" />
+          {admin && <button className="btn btn-p btn-sm desktop-add" onClick={() => setModal({ type: "edit", id: null })}>+ เพิ่มกิจกรรม</button>}
           <button className="btn btn-g btn-sm" onClick={refresh} title="ดึงข้อมูลล่าสุดทันที">
             ↻ {syncAt ? "อัปเดต " + hhmm(syncAt) + " น." : "อัปเดต"}
           </button>
@@ -2709,7 +2709,7 @@ export default function App() {
       {modal && modal.type === "edit" && <EditModal />}
       {modal && modal.type === "pin" && <PinModal />}
       {modal && modal.type === "settings" && <SettingsModal />}
-      {modal && modal.type === "quick" && <QuickModal />}
+      {modal && modal.type === "admin-tools" && admin && <AdminToolsModal />}
       {modal && modal.type === "bulk" && <BulkModal />}
       {modal && modal.type === "units" && <UnitsModal />}
       {modal && modal.type === "poster" && cur && <PosterModal />}
