@@ -1,30 +1,102 @@
-# TUPKLN Activity 360 — Shared Database Edition
+# TUPKLN School Portal v0.5
 
-เวอร์ชันนี้ใช้ React + Vite + Supabase และออกแบบให้หลายอุปกรณ์เห็นข้อมูลกิจกรรมชุดเดียวกัน
+เวอร์ชันนี้พัฒนาต่อจาก v0.4 โดยเพิ่ม **Executive Dashboard** สำหรับผู้บริหาร ซึ่งรวมข้อมูลสรุปจาก Activity 360, CARE 360 และ PA 360 ไว้ในหน้าเดียว โดยไม่ส่งข้อมูลรายบุคคลจาก CARE/PA มายัง Browser
 
-## สิ่งที่เปลี่ยนจาก Preview
-- กิจกรรม กลุ่มงาน และการตั้งค่าระบบเก็บใน Supabase
-- ผู้ใช้ทั่วไปเปิดลิงก์แล้วอ่านปฏิทินได้โดยไม่ต้อง Login
-- รายชื่อผู้ไม่เข้าร่วมและข้อมูลผู้ประสานงานเป็นข้อมูลส่วนผู้ดูแล
-- ผู้ดูแลเข้าสู่ระบบด้วย Email Magic Link แทน PIN 1234
-- เปิด Realtime สำหรับปฏิทิน/กิจกรรม เพื่อให้หน้าจอที่เปิดอยู่รับการเปลี่ยนแปลงจากฐานข้อมูล
-- `กลุ่มของคุณครู` ยังเก็บใน localStorage เพราะเป็นค่าความชอบเฉพาะอุปกรณ์ ไม่ใช่ข้อมูลส่วนกลาง
+## เพิ่มใน v0.5
 
-## Environment Variables บน Vercel
-เวอร์ชันที่จัดให้เชื่อมโปรเจกต์ Supabase ของโรงเรียนไว้แล้ว จึง Deploy ได้ทันทีโดยไม่ต้องกรอก Environment Variables เพิ่ม หากภายหลังต้องการเปลี่ยน Supabase project สามารถกำหนด `VITE_SUPABASE_URL` และ `VITE_SUPABASE_PUBLISHABLE_KEY` ใน Vercel เพื่อ override ค่าเดิมได้
+- Dashboard ผู้บริหาร แสดง Activity 360 + CARE 360 + PA 360 ในหน้าเดียว
+- KPI ระดับโรงเรียน: นักเรียนใช้งาน, รายการติดตาม CARE, รายการเกินกำหนด, เคสเปิด, รายการ PA
+- CARE 360 แสดงสัดส่วนสถานะนักเรียน `normal / watch / help / urgent`
+- CARE 360 แสดงรายการติดตามที่ยังเปิด แยก `watch / help / urgent`
+- แสดงจำนวน CARE ที่ครบกำหนดวันนี้, ภายใน 7 วัน และเกินกำหนด
+- PA 360 แสดงสถานะ `draft / review / returned / approved`, ค่าเฉลี่ย completion และกำหนดปิดระบบ
+- Action Center สร้างรายการที่ผู้บริหารควรติดตามจากข้อมูลสรุปอัตโนมัติ เช่น CARE เกินกำหนด, CARE เร่งด่วน, เคสเปิด และ PA ใกล้กำหนด
+- Activity 360 แสดงจำนวนกิจกรรมวันนี้/7 วัน พร้อมรายการกำหนดการล่าสุด
+- Dashboard ใช้ `/api/executive-summary` และอนุญาตเฉพาะ Role `admin`
+- Cache ข้อมูล Dashboard ล่าสุดในเครื่อง ใช้เป็น fallback เมื่อสัญญาณขาดช่วง
+- PWA cache เปลี่ยนเป็น v5
 
-## Supabase Auth Redirect URL
-ใน Supabase > Authentication > URL Configuration ให้ใส่ Production URL ของ Vercel เช่น
-`https://tupkln-activity-360.vercel.app`
-ทั้ง Site URL และ Redirect URLs ที่อนุญาต
+## โครงสร้างความปลอดภัย
 
-## ทดสอบในเครื่อง
-```bash
-npm install
-npm run dev
+Browser Login ด้วย Supabase ของ **TUPKLN Activity 360** เท่านั้น จากนั้น Access Token จะถูกส่งไปที่ Vercel Serverless Function
+
+`/api/care-summary`
+- ใช้ได้กับ `admin` และ `teacher`
+- ส่งกลับเฉพาะจำนวนรวม CARE
+
+`/api/executive-summary`
+- ใช้ได้กับ `admin` เท่านั้น
+- ฝั่ง Server ใช้ `CARE_SUPABASE_SERVICE_ROLE_KEY`
+- อ่านข้อมูลรวมของ CARE 360 และ PA 360
+- ส่งกลับเฉพาะ Count, Status Aggregate, ค่าเฉลี่ย และกำหนดเวลา
+- **ไม่ส่งชื่อ รหัสนักเรียน คะแนน รายละเอียดเคส หรือข้อมูลระบุตัวบุคคล**
+
+ห้ามนำ `CARE_SUPABASE_SERVICE_ROLE_KEY` ใส่ใน `src/`, GitHub หรือไฟล์ที่ Browser ดาวน์โหลดได้
+
+## ขั้นตอนติดตั้ง
+
+### 1) Supabase: TUPKLN Activity 360
+
+ถ้าเคยรัน `supabase/activity-portal-v0.4.sql` แล้ว **v0.5 ไม่ต้องรัน SQL เพิ่ม** เพราะเวอร์ชันนี้ไม่ได้เพิ่มตารางใหม่
+
+ถ้ายังไม่เคยรัน ให้รันไฟล์:
+
+`supabase/activity-portal-v0.4.sql`
+
+### 2) Vercel Environment Variables
+
+ตั้งค่าที่ Vercel > Project > Settings > Environment Variables
+
+```text
+VITE_SUPABASE_URL=https://bkrhnxnqdesyugvxuuys.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=<publishable key ของ Activity 360>
+CARE_SUPABASE_URL=https://xqjfwrkqpdptnofviyyk.supabase.co
+CARE_SUPABASE_SERVICE_ROLE_KEY=<service_role key ของ CARE 360>
 ```
 
+`CARE_SUPABASE_SERVICE_ROLE_KEY` ต้องอยู่ฝั่ง Vercel Server เท่านั้น
 
-## การเข้าสู่ระบบผู้ดูแล
-เวอร์ชันนี้ใช้ Email + Password ผ่าน Supabase Auth (`signInWithPassword`) แทน Magic Link เพื่อหลีกเลี่ยงข้อจำกัด email rate limit.
-บัญชีต้องได้รับสิทธิ์ผู้ดูแลในฐานข้อมูลก่อนจึงจะแก้ไขข้อมูลได้.
+### 3) GitHub / Vercel
+
+อัปโหลดไฟล์ทั้งโฟลเดอร์ไปยัง repo `tupkln-school-portal` แล้ว Deploy ด้วย Vercel
+
+Build command:
+
+```text
+npm run build
+```
+
+Output directory:
+
+```text
+dist
+```
+
+### 4) ทดสอบ v0.5
+
+1. Login ด้วยบัญชีผู้บริหาร
+2. หน้าแรกควรมีปุ่ม **Dashboard ผู้บริหาร**
+3. เปิด Dashboard แล้วตรวจว่าเห็นข้อมูล CARE 360 และ PA 360
+4. ตรวจว่า CARE แสดงเฉพาะข้อมูลรวม ไม่มีรายชื่อนักเรียน
+5. ตรวจ Action Center ว่ามีรายการตามข้อมูลจริง
+6. ตรวจ Activity 360 วันนี้และ 7 วันข้างหน้า
+7. ปิดอินเทอร์เน็ตหลังเคยเปิด Dashboard แล้วลองเปิดอีกครั้ง ควรเห็นข้อมูล Cache ล่าสุดพร้อมคำว่า `OFFLINE CACHE`
+8. Login ด้วย Role ครู ตรวจว่าไม่สามารถเข้าหน้า Executive Dashboard ได้
+
+## ระบบเดิมที่ยังคงอยู่
+
+- Login จริงด้วย Supabase Auth
+- Role: ผู้บริหาร / ครู / นักเรียน / ผู้ปกครอง
+- Activity 360 Realtime
+- CARE summary สำหรับผู้บริหารและครู
+- ประกาศกลางตาม Role
+- จัดการผู้ใช้ Portal
+- PWA สำหรับ iPhone / Android
+
+## ระยะถัดไป
+
+เหมาะที่จะพัฒนา v0.6 ต่อในหัวข้อ:
+- Attendance / School Buddy summary
+- Dashboard ห้องเรียนสำหรับครูที่ปรึกษา
+- Notification Center รวมรายการจาก Activity + CARE
+- Deep Link เปิดจาก Portal ไปยังหน้าที่เกี่ยวข้องใน CARE/Activity โดยตรง
